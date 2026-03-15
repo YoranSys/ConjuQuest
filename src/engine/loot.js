@@ -6,9 +6,11 @@ export function tirerRarete(rarete_min = null) {
 
   const raretesOrdre = ['legendaire', 'epique', 'rare', 'peu_commune', 'commune'];
 
-  // Si rarete_min, ne garder que les raretés >= rarete_min (i.e. aussi bonnes ou meilleures)
-  const raretesDisponibles = rarete_min
-    ? raretesOrdre.slice(0, raretesOrdre.indexOf(rarete_min) + 1)
+  // If rarete_min, ne garder que les raretés >= rarete_min (i.e. aussi bonnes ou meilleures).
+  // If the value is unknown, fall back to using all rarities.
+  const minIndex = rarete_min ? raretesOrdre.indexOf(rarete_min) : -1;
+  const raretesDisponibles = minIndex > -1
+    ? raretesOrdre.slice(0, minIndex + 1)
     : raretesOrdre;
 
   // Redistribuer les probabilités

@@ -9,8 +9,10 @@ export function renderProfile(container) {
 
   const tempStats = {};
   Object.entries(stats || {}).forEach(([key, val]) => {
-    const parts = key.split('_');
-    const temps = parts[parts.length - 1];
+    // Key format is "{verbeId}_{temps}". Split on first '_' only so that
+    // compound temps like "passe_compose" are kept intact.
+    const sep = key.indexOf('_');
+    const temps = sep === -1 ? key : key.slice(sep + 1);
     if (!tempStats[temps]) tempStats[temps] = { correct: 0, total: 0 };
     tempStats[temps].correct += val.correct;
     tempStats[temps].total += val.total;

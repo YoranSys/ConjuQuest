@@ -19,6 +19,12 @@ VERBES.forEach(verbe => {
   if (!verbe.auxiliaire) { console.error(`${prefix} Manque l'auxiliaire`); errors++; }
   if (!verbe.participe_passe) { console.error(`${prefix} Manque participe_passe`); errors++; }
 
+  if (!verbe.temps) {
+    console.error(`${prefix} Manque le champ "temps"`);
+    errors++;
+    return;
+  }
+
   TEMPS_REQUIS.forEach(temps => {
     if (!verbe.temps[temps]) {
       console.error(`${prefix} Manque le temps "${temps}"`);

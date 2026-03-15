@@ -90,3 +90,14 @@ export function incrementStreak() {
 export function resetStreak() {
   setState({ streak: 0 });
 }
+
+export function recordResponse(correct) {
+  const { profile } = _state;
+  const updatedProfile = {
+    ...profile,
+    totalReponses: (profile.totalReponses || 0) + 1,
+    totalCorrectes: (profile.totalCorrectes || 0) + (correct ? 1 : 0),
+  };
+  DB.saveProfile(updatedProfile);
+  setState({ profile: updatedProfile });
+}

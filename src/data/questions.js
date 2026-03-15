@@ -43,7 +43,7 @@ export function genererQuestion(verbe, temps, difficulte = 'moyen') {
     choix: shuffle([correcte, ...distracteurs]),
     verbeId: verbe.id,
     temps,
-    pronominIdx: idx,
+    pronomIdx: idx,
     infinitif: verbe.infinitif,
   };
 }

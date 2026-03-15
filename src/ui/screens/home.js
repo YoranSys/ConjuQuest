@@ -1,8 +1,7 @@
-import { getState, navigate } from '../../state.js';
+import { getState, navigate, setState } from '../../state.js';
 import { renderXPBar } from '../components/xp-bar.js';
 import { DB } from '../../db.js';
 import { ouvrirCoffre } from '../../engine/loot.js';
-import { renderItemCard } from '../components/item-card.js';
 import { renderChest } from '../components/chest.js';
 
 export function renderHome(container) {
@@ -87,13 +86,21 @@ export function renderHome(container) {
 }
 
 function openChest(chest, container) {
+  const goHome = () => import('./home.js').then(({ renderHome }) => renderHome(container));
+
   const item = ouvrirCoffre(chest.type);
-  DB.addItem(item);
   DB.removeChest(chest.id);
 
+  if (!item) {
+    setState({ chests: DB.getChests() });
+    goHome();
+    return;
+  }
+
+  DB.addItem(item);
+  setState({ inventory: DB.getInventory(), chests: DB.getChests() });
+
   import('./loot-screen.js').then(({ renderLootScreen }) => {
-    renderLootScreen(container, item, () => {
-      import('./home.js').then(({ renderHome }) => renderHome(container));
-    });
+    renderLootScreen(container, item, goHome);
   });
 }

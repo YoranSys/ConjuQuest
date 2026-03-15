@@ -62,7 +62,10 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      }).catch(() => cached);
+      }).catch(() => {
+        if (cached) return cached;
+        return new Response('Network error', { status: 504, statusText: 'Gateway Timeout' });
+      });
     })
   );
 });

@@ -32,8 +32,12 @@ function renderScreen(screen) {
   }
 }
 
+let _lastScreen = null;
 subscribe((state) => {
-  renderScreen(state.currentScreen);
+  if (state.currentScreen !== _lastScreen) {
+    _lastScreen = state.currentScreen;
+    renderScreen(state.currentScreen);
+  }
 });
 
 if ('serviceWorker' in navigator) {

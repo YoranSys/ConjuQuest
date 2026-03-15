@@ -1,5 +1,4 @@
 import { RARETES } from '../../data/loot-tables.js';
-import { renderItemCard } from '../components/item-card.js';
 
 export function renderLootScreen(container, item, onContinue) {
   const rarete = RARETES[item.rareté] || RARETES.commune;

@@ -1,6 +1,6 @@
 import { genererSerie } from '../../data/questions.js';
 import { calcXP, getComboLabel } from '../../engine/xp.js';
-import { addXP, incrementStreak, resetStreak } from '../../state.js';
+import { addXP, incrementStreak, resetStreak, recordResponse } from '../../state.js';
 import { DB } from '../../db.js';
 import { playCorrect, playWrong, playCombo } from '../../utils/audio.js';
 import { vibrate } from '../../utils/haptics.js';
@@ -123,8 +123,10 @@ export class MissileGame {
 
     if (correct) {
       this.streak++;
+      incrementStreak();
       const xp = calcXP(true, this.streak, tempsMs, this.vies);
       addXP(xp);
+      recordResponse(true);
       this.score += xp;
 
       playCorrect();
@@ -140,6 +142,7 @@ export class MissileGame {
     } else {
       this.streak = 0;
       resetStreak();
+      recordResponse(false);
       this.vies--;
 
       playWrong();
