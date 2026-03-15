@@ -41,7 +41,7 @@ html, body {
 }
 
 /* ── Buttons ──────────────────────────────────────────────────────────── */
-button { cursor: pointer; border: none; font-family: inherit; }
+button { cursor: pointer; border: none; font-family: inherit; color: inherit; }
 
 .btn-primary {
   background: var(--purple);
