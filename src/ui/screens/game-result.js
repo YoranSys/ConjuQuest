@@ -47,6 +47,6 @@ export function renderGameResult(container, result) {
     </div>
   `;
 
-  document.getElementById('btn-rejouer').addEventListener('click', () => navigate('missile'));
+  document.getElementById('btn-rejouer').addEventListener('click', () => navigate(result.game || 'missile'));
   document.getElementById('btn-retour').addEventListener('click', () => navigate('home'));
 }

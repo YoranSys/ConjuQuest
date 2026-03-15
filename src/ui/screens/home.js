@@ -47,6 +47,12 @@ export function renderHome(container) {
             <div class="game-desc">QCM — Choisis la bonne conjugaison</div>
             <div class="game-unlock">Disponible</div>
           </button>
+          <button class="game-card" id="btn-snake">
+            <div class="game-icon">🐍</div>
+            <div class="game-name">Serpent Conjugueur</div>
+            <div class="game-desc">Guide le serpent vers la bonne réponse</div>
+            <div class="game-unlock">Disponible</div>
+          </button>
           <div class="game-card game-locked">
             <div class="game-icon">⚡</div>
             <div class="game-name">Frappe Éclair</div>
@@ -83,6 +89,7 @@ export function renderHome(container) {
   }
 
   document.getElementById('btn-missile').addEventListener('click', () => navigate('missile'));
+  document.getElementById('btn-snake').addEventListener('click', () => navigate('snake'));
   document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
 }
 

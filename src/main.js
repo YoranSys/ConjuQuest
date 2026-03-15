@@ -2,6 +2,7 @@ import { initState, getState, subscribe, navigate } from './state.js';
 import { renderHome } from './ui/screens/home.js';
 import { renderProfile } from './ui/screens/profile.js';
 import { MissileGame } from './games/missile/game.js';
+import { SnakeGame } from './games/snake/game.js';
 import { renderGameResult } from './ui/screens/game-result.js';
 
 const app = document.getElementById('app');
@@ -18,6 +19,17 @@ function renderScreen(screen) {
       break;
     case 'missile': {
       const game = new MissileGame({
+        n: 10,
+        onComplete: (result) => {
+          game.destroy();
+          renderGameResult(app, result);
+        },
+      });
+      game.start(app);
+      break;
+    }
+    case 'snake': {
+      const game = new SnakeGame({
         n: 10,
         onComplete: (result) => {
           game.destroy();
