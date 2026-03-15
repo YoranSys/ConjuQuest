@@ -78,3 +78,29 @@ export function getTempsLabel(temps) {
   };
   return labels[temps] || temps;
 }
+
+/**
+ * Returns the correctly formed French instruction for a tense,
+ * using "à l'" before vowels and "au" otherwise.
+ * e.g. "Conjugue à l'imparfait" or "Conjugue au présent"
+ */
+export function getTempsFormule(temps) {
+  const formules = {
+    present:       "Conjugue au présent",
+    imparfait:     "Conjugue à l'imparfait",
+    passe_compose: "Conjugue au passé composé",
+    futur:         "Conjugue au futur",
+  };
+  return formules[temps] || `Conjugue au ${temps}`;
+}
+
+/** CSS class name for colour-coding a tense. */
+export function getTempsCouleur(temps) {
+  const couleurs = {
+    present:       'temps-present',
+    imparfait:     'temps-imparfait',
+    passe_compose: 'temps-passe-compose',
+    futur:         'temps-futur',
+  };
+  return couleurs[temps] || '';
+}
