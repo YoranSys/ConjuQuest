@@ -1,0 +1,99 @@
+import { getState, navigate } from '../../state.js';
+import { renderXPBar } from '../components/xp-bar.js';
+import { DB } from '../../db.js';
+import { ouvrirCoffre } from '../../engine/loot.js';
+import { renderItemCard } from '../components/item-card.js';
+import { renderChest } from '../components/chest.js';
+
+export function renderHome(container) {
+  const state = getState();
+  const { profile } = state;
+
+  container.innerHTML = `
+    <div class="screen screen-home">
+      <div class="home-header">
+        <h1 class="game-title">🚀 ConjuQuest</h1>
+        <p class="home-subtitle">Apprends la conjugaison en jouant !</p>
+      </div>
+
+      <div id="xp-bar-container"></div>
+
+      <div class="home-stats">
+        <div class="stat-card">
+          <div class="stat-value">${profile?.totalCorrectes || 0}</div>
+          <div class="stat-label">Bonnes réponses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${profile?.maxStreak || 0}</div>
+          <div class="stat-label">Meilleur streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${state.inventory?.length || 0}</div>
+          <div class="stat-label">Objets collectés</div>
+        </div>
+      </div>
+
+      <div class="home-chests" id="home-chests">
+        <h2 class="section-title">⬛ Coffres disponibles</h2>
+        <div class="chests-row" id="chests-row"></div>
+      </div>
+
+      <div class="home-games">
+        <h2 class="section-title">🎮 Mini-jeux</h2>
+        <div class="games-grid">
+          <button class="game-card" id="btn-missile">
+            <div class="game-icon">🚀</div>
+            <div class="game-name">Missile Spatial</div>
+            <div class="game-desc">QCM — Choisis la bonne conjugaison</div>
+            <div class="game-unlock">Disponible</div>
+          </button>
+          <div class="game-card game-locked">
+            <div class="game-icon">⚡</div>
+            <div class="game-name">Frappe Éclair</div>
+            <div class="game-desc">Tape la conjugaison</div>
+            <div class="game-unlock">Niveau 2</div>
+          </div>
+          <div class="game-card game-locked">
+            <div class="game-icon">🃏</div>
+            <div class="game-name">Mémory des Temps</div>
+            <div class="game-desc">Trouve les paires</div>
+            <div class="game-unlock">Niveau 3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-actions">
+        <button class="btn-secondary" id="btn-profile">👤 Mon Profil</button>
+      </div>
+    </div>
+  `;
+
+  renderXPBar(document.getElementById('xp-bar-container'));
+
+  const chestsRow = document.getElementById('chests-row');
+  const chests = DB.getChests();
+
+  if (chests.length === 0) {
+    chestsRow.innerHTML = '<p class="no-chests">Termine une session pour gagner un coffre !</p>';
+  } else {
+    chests.forEach(chest => {
+      const el = renderChest(chest, (c) => openChest(c, container));
+      chestsRow.appendChild(el);
+    });
+  }
+
+  document.getElementById('btn-missile').addEventListener('click', () => navigate('missile'));
+  document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
+}
+
+function openChest(chest, container) {
+  const item = ouvrirCoffre(chest.type);
+  DB.addItem(item);
+  DB.removeChest(chest.id);
+
+  import('./loot-screen.js').then(({ renderLootScreen }) => {
+    renderLootScreen(container, item, () => {
+      import('./home.js').then(({ renderHome }) => renderHome(container));
+    });
+  });
+}
