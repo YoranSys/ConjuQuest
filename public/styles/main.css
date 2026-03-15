@@ -413,6 +413,13 @@ button { cursor: pointer; border: none; font-family: inherit; }
   aspect-ratio: 1;
   perspective: 600px;
   cursor: pointer;
+  outline: none;
+}
+
+.memory-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(167,139,250,.4);
 }
 
 .memory-card-inner {
