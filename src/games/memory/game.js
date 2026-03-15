@@ -74,12 +74,12 @@ export class MemoryGame {
 
         <div class="memory-grid" id="memory-grid">
           ${this.cards.map(card => `
-            <div class="memory-card" data-index="${card.index}">
+            <button class="memory-card" type="button" data-index="${card.index}">
               <div class="memory-card-inner">
                 <div class="memory-card-front">🃏</div>
                 <div class="memory-card-back ${card.type === 'clue' ? 'memory-card-clue' : 'memory-card-answer'}">${card.content}</div>
               </div>
-            </div>
+            </button>
           `).join('')}
         </div>
 
