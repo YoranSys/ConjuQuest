@@ -29,9 +29,55 @@ export const LOOT_TABLE = [
   { id: 'badge_legende',         type: 'collection',  rareté: 'legendaire',  nom: 'Badge Légende',           description: 'Badge "Légende de ConjuQuest"',             icon: '🏆' },
 ];
 
+// Coffres sous forme de licornes — chaque coffre est un personnage différent.
+// Les clés restent inchangées pour la compatibilité avec la logique existante.
 export const COFFRES = {
-  bois:    { nom: 'Coffre Bois',    icon: '📦', sessions: 1,  rarete_min: 'commune',     couleur: '#92400e' },
-  argent:  { nom: 'Coffre Argent',  icon: '🗃️', sessions: 5,  rarete_min: 'peu_commune', couleur: '#6b7280' },
-  or:      { nom: 'Coffre Or',      icon: '💰', sessions: 20, rarete_min: 'rare',        couleur: '#f59e0b' },
-  cristal: { nom: 'Coffre Cristal', icon: '💎', sessions: -1, rarete_min: 'rare',        couleur: '#06b6d4' },
+  bois:    { nom: "Luna l'Étoilée",      icon: '🦄', sessions: 1,  rarete_min: 'commune',     couleur: '#a78bfa' },
+  argent:  { nom: 'Iris Arc-en-Ciel',    icon: '🌈', sessions: 5,  rarete_min: 'peu_commune', couleur: '#34d399' },
+  or:      { nom: 'Solana la Guerrière', icon: '☀️', sessions: 20, rarete_min: 'rare',        couleur: '#fbbf24' },
+  cristal: { nom: 'Cristalia la Sage',   icon: '💎', sessions: -1, rarete_min: 'rare',        couleur: '#67e8f9' },
 };
+
+// Histoire épique des licornes — une nouvelle partie se dévoile à chaque coffre ouvert.
+export const HISTOIRE_LICORNES = [
+  {
+    partie: 1,
+    titre: "L'Appel de l'Aventure",
+    texte: "Dans le Royaume des Mots vivait Luna l'Étoilée, une licorne à la corne argentée. Un matin, elle découvrit l'impensable : tous les mots avaient disparu ! Les habitants étaient silencieux, tristes. Sans hésiter, Luna branda sa corne : « Le courage, c'est agir même quand on tremble. » Elle prit son envol vers l'inconnu.",
+    licorne: "Luna l'Étoilée",
+    icon: '🦄',
+    valeur: 'Le Courage',
+  },
+  {
+    partie: 2,
+    titre: "La Force de l'Amitié",
+    texte: "Luna rencontra Iris Arc-en-Ciel, licorne aux couleurs de la joie. « Seule, tu ne peux pas tout faire, » dit Iris avec douceur, « mais ensemble, nous pouvons tout accomplir ! » Iris apprit à Luna que demander de l'aide n'est pas une faiblesse — c'est une force. Les deux licornes partirent côte à côte.",
+    licorne: 'Iris Arc-en-Ciel',
+    icon: '🌈',
+    valeur: 'La Gentillesse',
+  },
+  {
+    partie: 3,
+    titre: "La Leçon de Solana",
+    texte: "La route fut longue et les épreuves difficiles. Solana la Guerrière Dorée les rejoignit alors. « J'ai échoué cent fois avant de réussir, » dit-elle fièrement. « Chaque erreur est une leçon précieuse. Ne renoncez jamais ! » Grâce à sa détermination, les trois licornes avancèrent plus loin que jamais.",
+    licorne: 'Solana la Guerrière',
+    icon: '☀️',
+    valeur: 'La Persévérance',
+  },
+  {
+    partie: 4,
+    titre: "La Sagesse de Cristalia",
+    texte: "Au sommet de la Montagne des Mots brillait Cristalia la Sage, licorne de cristal. « Les mots ont disparu parce que les enfants ont cessé d'apprendre et de partager, » révéla-t-elle. « Votre savoir est le trésor le plus précieux. Offrez-le au monde, et la magie reviendra ! »",
+    licorne: 'Cristalia la Sage',
+    icon: '💎',
+    valeur: 'La Sagesse',
+  },
+  {
+    partie: 5,
+    titre: "Le Retour de la Magie",
+    texte: "Les quatre licornes unirent leurs pouvoirs : le courage de Luna, la gentillesse d'Iris, la persévérance de Solana et la sagesse de Cristalia. Un à un, les mots revinrent dans le Royaume ! Désormais, chaque enfant qui apprend à conjuguer fait briller leur étoile un peu plus fort. Tu es l'un d'eux — continue ! ⭐🦄",
+    licorne: 'Les Quatre Licornes',
+    icon: '🌟',
+    valeur: "L'Union",
+  },
+];

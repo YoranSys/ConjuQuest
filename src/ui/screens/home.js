@@ -3,6 +3,7 @@ import { renderXPBar } from '../components/xp-bar.js';
 import { DB } from '../../db.js';
 import { ouvrirCoffre } from '../../engine/loot.js';
 import { renderChest } from '../components/chest.js';
+import { HISTOIRE_LICORNES } from '../../data/loot-tables.js';
 
 export function renderHome(container) {
   const state = getState();
@@ -33,7 +34,7 @@ export function renderHome(container) {
       </div>
 
       <div class="home-chests" id="home-chests">
-        <h2 class="section-title">⬛ Coffres disponibles</h2>
+        <h2 class="section-title">🦄 Licornes disponibles</h2>
         <div class="chests-row" id="chests-row"></div>
       </div>
 
@@ -73,7 +74,7 @@ export function renderHome(container) {
   const chests = DB.getChests();
 
   if (chests.length === 0) {
-    chestsRow.innerHTML = '<p class="no-chests">Termine une session pour gagner un coffre !</p>';
+    chestsRow.innerHTML = '<p class="no-chests">Termine une session pour rencontrer une licorne !</p>';
   } else {
     chests.forEach(chest => {
       const el = renderChest(chest, (c) => openChest(c, container));
@@ -91,6 +92,11 @@ function openChest(chest, container) {
   const item = ouvrirCoffre(chest.type);
   DB.removeChest(chest.id);
 
+  // Reveal the next story part
+  const storyIndex = DB.getStoryProgress();
+  const storyPart = HISTOIRE_LICORNES[storyIndex] || null;
+  if (storyPart) DB.advanceStoryProgress();
+
   if (!item) {
     setState({ chests: DB.getChests() });
     goHome();
@@ -101,6 +107,6 @@ function openChest(chest, container) {
   setState({ inventory: DB.getInventory(), chests: DB.getChests() });
 
   import('./loot-screen.js').then(({ renderLootScreen }) => {
-    renderLootScreen(container, item, goHome);
+    renderLootScreen(container, item, storyPart, goHome);
   });
 }

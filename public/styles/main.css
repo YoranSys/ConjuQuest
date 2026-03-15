@@ -232,6 +232,28 @@ button { cursor: pointer; border: none; font-family: inherit; }
 .loot-item-desc { font-size: .85rem; color: var(--text-muted); margin: 8px 0 24px; }
 .loot-continue-btn { margin-top: 16px; }
 
+/* ── Story card (licornes) ───────────────────────────────────────────── */
+.loot-story-card {
+  background: var(--bg2);
+  border: 2px solid var(--purple);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 16px 0;
+  text-align: left;
+  animation: fadeIn .4s ease .3s both;
+}
+.loot-story-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.loot-story-icon   { font-size: 1.5rem; }
+.loot-story-licorne { font-weight: 700; color: var(--accent); font-size: .9rem; }
+.loot-story-valeur  { margin-left: auto; font-size: .75rem; color: var(--purple-light); font-style: italic; }
+.loot-story-titre  { font-size: .85rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.loot-story-texte  { font-size: .82rem; color: var(--text-muted); line-height: 1.55; }
+
 /* ── Animations ──────────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }

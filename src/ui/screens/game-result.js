@@ -33,11 +33,11 @@ export function renderGameResult(container, result) {
       </div>
 
       <div class="result-chest">
-        <h3>🎁 Tu as gagné un coffre !</h3>
+        <h3>🦄 Tu as rencontré une licorne !</h3>
         <div class="result-chest-display">
           ${COFFRES[coffre]?.icon} ${COFFRES[coffre]?.nom}
         </div>
-        <p class="result-chest-hint">Va sur l'écran d'accueil pour l'ouvrir !</p>
+        <p class="result-chest-hint">Va sur l'écran d'accueil pour découvrir son trésor !</p>
       </div>
 
       <div class="result-actions">
