@@ -52,7 +52,7 @@ export class FrappeEclairGame {
               spellcheck="false"
               placeholder="Ta réponse…"
             >
-            <button class="frappe-submit" id="frappe-submit">⚡</button>
+            <button class="frappe-submit" id="frappe-submit" aria-label="Valider la réponse">⚡</button>
           </div>
         </div>
 
