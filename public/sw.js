@@ -19,6 +19,9 @@ const STATIC_PATHS = [
   '/src/engine/xp.js',
   '/src/engine/loot.js',
   '/src/games/missile/game.js',
+  '/src/games/snake/game.js',
+  '/src/games/frappe/game.js',
+  '/src/games/memory/game.js',
   '/src/ui/animations.js',
   '/src/ui/components/feedback.js',
   '/src/ui/components/xp-bar.js',
@@ -37,7 +40,11 @@ const STATIC_URLS = STATIC_PATHS.map(p => BASE + p);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_URLS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      // Use { cache: 'reload' } to bypass the HTTP cache and always fetch
+      // fresh files from the network when installing a new service worker.
+      .then((cache) => cache.addAll(STATIC_URLS.map(url => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -53,6 +60,29 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
+  // Network-first for HTML navigation requests so that a manual page refresh
+  // always picks up the latest version of index.html after a deployment.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        }
+        // Non-OK (4xx/5xx): serve cached version if available, otherwise the error response.
+        return caches.match(request).then((cached) => cached || response);
+      }).catch(() =>
+        // Network failure: serve cached version or a generic offline response.
+        caches.match(request).then(
+          (cached) => cached || new Response('Offline', { status: 503, statusText: 'Service Unavailable' })
+        )
+      )
+    );
+    return;
+  }
+
+  // Cache-first for all other assets.
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
@@ -62,9 +92,6 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      }).catch(() => {
-        if (cached) return cached;
-        return new Response('Network error', { status: 504, statusText: 'Gateway Timeout' });
       });
     })
   );
