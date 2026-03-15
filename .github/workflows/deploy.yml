@@ -2,9 +2,9 @@ name: CI / Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 
@@ -39,11 +39,11 @@ jobs:
       - name: Run tests
         run: npm test
 
-  # ── 2. Build & deploy (main branch only) ──────────────────────────────────
+  # ── 2. Build & deploy (master branch only) ──────────────────────────────────
   deploy:
     name: Deploy
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
