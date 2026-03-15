@@ -67,7 +67,8 @@ self.addEventListener('fetch', (event) => {
       fetch(request).then((response) => {
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          const cachePutPromise = caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          event.waitUntil(cachePutPromise.catch(() => {}));
           return response;
         }
         // Non-OK (4xx/5xx): serve cached version if available, otherwise the error response.
@@ -89,7 +90,8 @@ self.addEventListener('fetch', (event) => {
       return fetch(request).then((response) => {
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          const cachePutPromise = caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          event.waitUntil(cachePutPromise.catch(() => {}));
         }
         return response;
       });
