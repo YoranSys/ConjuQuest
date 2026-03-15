@@ -169,11 +169,16 @@ export class SnakeGame {
     });
 
     this._touchStartHandler = (e) => {
+      if (this.questionActive) {
+        return;
+      }
+      e.preventDefault();
       this._touchStartX = e.touches[0].clientX;
       this._touchStartY = e.touches[0].clientY;
     };
     this._touchEndHandler = (e) => {
       if (this.questionActive) return;
+      e.preventDefault();
       const dx = e.changedTouches[0].clientX - this._touchStartX;
       const dy = e.changedTouches[0].clientY - this._touchStartY;
       let d;
@@ -186,8 +191,11 @@ export class SnakeGame {
         this.nextDirection = d;
       }
     };
-    this.canvas.addEventListener('touchstart', this._touchStartHandler, { passive: true });
-    this.canvas.addEventListener('touchend', this._touchEndHandler, { passive: true });
+    if (this.canvas && this.canvas.style) {
+      this.canvas.style.touchAction = 'none';
+    }
+    this.canvas.addEventListener('touchstart', this._touchStartHandler, { passive: false });
+    this.canvas.addEventListener('touchend', this._touchEndHandler, { passive: false });
   }
 
   _startLoop() {
