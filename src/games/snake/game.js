@@ -260,7 +260,15 @@ export class SnakeGame {
     const tempsLabel = document.getElementById('snake-temps-label');
     const choices = document.getElementById('snake-choices');
 
-    if (!questionText || !tempsLabel || !choices) return;
+    if (!questionText || !tempsLabel || !choices) {
+      console.error('Snake game: Missing question UI elements', {
+        questionTextExists: !!questionText,
+        tempsLabelExists: !!tempsLabel,
+        choicesExists: !!choices,
+      });
+      this.questionActive = false;
+      return;
+    }
 
     questionText.textContent = q.texte;
     tempsLabel.textContent = `Conjugue au ${TEMPS_LABELS[q.temps] || q.temps}`;
