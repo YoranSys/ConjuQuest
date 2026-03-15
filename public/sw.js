@@ -1,9 +1,15 @@
 const CACHE_NAME = 'conjuquest-v1';
-const STATIC_URLS = [
+
+// Compute the base path so the SW works both at the root ('/') and
+// under a sub-path (e.g. '/ConjuQuest/' when hosted on GitHub Pages).
+const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
+
+const STATIC_PATHS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/icons/icon.svg',
+  '/styles/main.css',
   '/src/main.js',
   '/src/db.js',
   '/src/state.js',
@@ -25,6 +31,9 @@ const STATIC_URLS = [
   '/src/utils/audio.js',
   '/src/utils/haptics.js',
 ];
+
+// Prefix every path with the detected base so cache keys match real request URLs.
+const STATIC_URLS = STATIC_PATHS.map(p => BASE + p);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
