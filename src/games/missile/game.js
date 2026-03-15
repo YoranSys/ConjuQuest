@@ -187,6 +187,7 @@ export class MissileGame {
       streak: this.streak,
       viesRestantes: this.vies,
       questions: this.questions.length,
+      game: 'missile',
     });
   }
 
