@@ -380,13 +380,22 @@ export class SnakeGame {
       const t = 1 - (i / this.snake.length) * 0.55;
       ctx.fillStyle = i === 0 ? '#a78bfa' : `rgba(83,74,183,${t})`;
       ctx.beginPath();
-      ctx.roundRect(
-        seg.x * cellSize + 1,
-        seg.y * cellSize + 1,
-        cellSize - 2,
-        cellSize - 2,
-        3,
-      );
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(
+          seg.x * cellSize + 1,
+          seg.y * cellSize + 1,
+          cellSize - 2,
+          cellSize - 2,
+          3,
+        );
+      } else {
+        ctx.rect(
+          seg.x * cellSize + 1,
+          seg.y * cellSize + 1,
+          cellSize - 2,
+          cellSize - 2,
+        );
+      }
       ctx.fill();
 
       if (i === 0) {
