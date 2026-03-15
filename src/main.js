@@ -75,19 +75,20 @@ subscribe((state) => {
   }
 });
 
+let refreshing = false;
+
 if ('serviceWorker' in navigator) {
+  // When a new service worker takes control (after skipWaiting + clients.claim),
+  // reload the page so the user immediately gets the updated version.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
-
-    // When a new service worker takes control (after skipWaiting + clients.claim),
-    // reload the page so the user immediately gets the updated version.
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        refreshing = true;
-        window.location.reload();
-      }
-    });
   });
 }
 
