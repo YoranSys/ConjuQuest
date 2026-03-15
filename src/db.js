@@ -42,8 +42,11 @@ export const DB = {
   getSessionCount: () => storageGet('sessionCount') ?? 0,
   incrementSession: () => storageUpdate('sessionCount', n => (n ?? 0) + 1),
 
+  getStoryProgress: () => storageGet('storyProgress') ?? 0,
+  advanceStoryProgress: () => storageUpdate('storyProgress', n => (n ?? 0) + 1),
+
   clear: () => {
-    ['profile','inventory','stats','chests','sessionCount'].forEach(k => {
+    ['profile','inventory','stats','chests','sessionCount','storyProgress'].forEach(k => {
       try { localStorage.removeItem(PREFIX + k); } catch {}
     });
   },

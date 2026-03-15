@@ -1,7 +1,19 @@
 import { RARETES } from '../../data/loot-tables.js';
 
-export function renderLootScreen(container, item, onContinue) {
+export function renderLootScreen(container, item, storyPart, onContinue) {
   const rarete = RARETES[item.rareté] || RARETES.commune;
+
+  const storyHtml = storyPart ? `
+    <div class="loot-story-card">
+      <div class="loot-story-header">
+        <span class="loot-story-icon">${storyPart.icon}</span>
+        <span class="loot-story-licorne">${storyPart.licorne}</span>
+        <span class="loot-story-valeur">✦ ${storyPart.valeur}</span>
+      </div>
+      <div class="loot-story-titre">Chapitre ${storyPart.partie} — ${storyPart.titre}</div>
+      <div class="loot-story-texte">${storyPart.texte}</div>
+    </div>
+  ` : '';
 
   container.innerHTML = `
     <div class="screen screen-loot">
@@ -16,6 +28,7 @@ export function renderLootScreen(container, item, onContinue) {
           <div class="loot-item-name">${item.nom}</div>
           <div class="loot-item-desc">${item.description}</div>
         </div>
+        ${storyHtml}
         <button class="btn-primary loot-continue-btn" id="btn-loot-continue">
           Super ! Continuer →
         </button>

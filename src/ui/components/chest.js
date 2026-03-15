@@ -9,7 +9,7 @@ export function renderChest(chest, onClick) {
   el.innerHTML = `
     <div class="chest-icon">${config.icon}</div>
     <div class="chest-name">${config.nom}</div>
-    <div class="chest-action">Ouvrir !</div>
+    <div class="chest-action">Rencontrer !</div>
   `;
 
   el.addEventListener('click', () => onClick(chest));
