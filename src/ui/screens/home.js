@@ -8,6 +8,38 @@ import { HISTOIRE_LICORNES } from '../../data/loot-tables.js';
 export function renderHome(container) {
   const state = getState();
   const { profile } = state;
+  const niveau = profile?.niveau || 0;
+
+  const frappeUnlocked = niveau >= 2;
+  const memoryUnlocked = niveau >= 3;
+
+  const frappeCard = frappeUnlocked
+    ? `<button class="game-card" id="btn-frappe">
+         <div class="game-icon">⚡</div>
+         <div class="game-name">Frappe Éclair</div>
+         <div class="game-desc">Tape la conjugaison</div>
+         <div class="game-unlock">Disponible</div>
+       </button>`
+    : `<div class="game-card game-locked">
+         <div class="game-icon">⚡</div>
+         <div class="game-name">Frappe Éclair</div>
+         <div class="game-desc">Tape la conjugaison</div>
+         <div class="game-unlock">Niveau 2</div>
+       </div>`;
+
+  const memoryCard = memoryUnlocked
+    ? `<button class="game-card" id="btn-memory">
+         <div class="game-icon">🃏</div>
+         <div class="game-name">Mémory des Temps</div>
+         <div class="game-desc">Trouve les paires</div>
+         <div class="game-unlock">Disponible</div>
+       </button>`
+    : `<div class="game-card game-locked">
+         <div class="game-icon">🃏</div>
+         <div class="game-name">Mémory des Temps</div>
+         <div class="game-desc">Trouve les paires</div>
+         <div class="game-unlock">Niveau 3</div>
+       </div>`;
 
   container.innerHTML = `
     <div class="screen screen-home">
@@ -53,18 +85,8 @@ export function renderHome(container) {
             <div class="game-desc">Guide le serpent vers la bonne réponse</div>
             <div class="game-unlock">Disponible</div>
           </button>
-          <div class="game-card game-locked">
-            <div class="game-icon">⚡</div>
-            <div class="game-name">Frappe Éclair</div>
-            <div class="game-desc">Tape la conjugaison</div>
-            <div class="game-unlock">Niveau 2</div>
-          </div>
-          <div class="game-card game-locked">
-            <div class="game-icon">🃏</div>
-            <div class="game-name">Mémory des Temps</div>
-            <div class="game-desc">Trouve les paires</div>
-            <div class="game-unlock">Niveau 3</div>
-          </div>
+          ${frappeCard}
+          ${memoryCard}
         </div>
       </div>
 
@@ -90,6 +112,8 @@ export function renderHome(container) {
 
   document.getElementById('btn-missile').addEventListener('click', () => navigate('missile'));
   document.getElementById('btn-snake').addEventListener('click', () => navigate('snake'));
+  if (frappeUnlocked) document.getElementById('btn-frappe').addEventListener('click', () => navigate('frappe'));
+  if (memoryUnlocked) document.getElementById('btn-memory').addEventListener('click', () => navigate('memory'));
   document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
 }
 
