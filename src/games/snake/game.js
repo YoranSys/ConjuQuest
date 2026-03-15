@@ -203,6 +203,18 @@ export class SnakeGame {
     this.gameLoopId = requestAnimationFrame(loop);
   }
 
+  _placeFoodNotOnSnake() {
+    // Ensure food is not placed on top of the snake
+    let position;
+    do {
+      position = {
+        x: Math.floor(Math.random() * GRID),
+        y: Math.floor(Math.random() * GRID),
+      };
+    } while (this.snake && this.snake.some(s => s.x === position.x && s.y === position.y));
+    this.food = position;
+  }
+
   _step() {
     this.direction = this.nextDirection;
     const head = this.snake[0];
@@ -213,6 +225,7 @@ export class SnakeGame {
 
     if (this.snake.some(s => s.x === newHead.x && s.y === newHead.y)) {
       this._initSnake();
+      this._placeFoodNotOnSnake();
       return;
     }
 
