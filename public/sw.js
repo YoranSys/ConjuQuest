@@ -19,6 +19,7 @@ const STATIC_PATHS = [
   '/src/engine/xp.js',
   '/src/engine/loot.js',
   '/src/games/missile/game.js',
+  '/src/games/snake/game.js',
   '/src/ui/animations.js',
   '/src/ui/components/feedback.js',
   '/src/ui/components/xp-bar.js',

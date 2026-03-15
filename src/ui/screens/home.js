@@ -41,6 +41,12 @@ export function renderHome(container) {
       <div class="home-games">
         <h2 class="section-title">🎮 Mini-jeux</h2>
         <div class="games-grid">
+          <button class="game-card" id="btn-snake">
+            <div class="game-icon">🐍</div>
+            <div class="game-name">Snake Arc-en-ciel</div>
+            <div class="game-desc">Mini-jeu coloré et doux</div>
+            <div class="game-unlock">Disponible</div>
+          </button>
           <button class="game-card" id="btn-missile">
             <div class="game-icon">🚀</div>
             <div class="game-name">Missile Spatial</div>
@@ -82,6 +88,7 @@ export function renderHome(container) {
     });
   }
 
+  document.getElementById('btn-snake').addEventListener('click', () => navigate('snake'));
   document.getElementById('btn-missile').addEventListener('click', () => navigate('missile'));
   document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
 }
