@@ -53,6 +53,7 @@ export class MissileGame {
           <div class="question-text" id="question-text"></div>
           <div class="temps-label" id="temps-label"></div>
           <div class="choices" id="choices"></div>
+          <div class="phrase-motivation" id="phrase-motivation"></div>
         </div>
 
         <div class="combo-display" id="combo-display"></div>
@@ -75,6 +76,7 @@ export class MissileGame {
     const choices = document.getElementById('choices');
     const qCurrent = document.getElementById('q-current');
     const progress = document.getElementById('game-progress');
+    const phraseEl = document.getElementById('phrase-motivation');
 
     if (!questionText) return;
 
@@ -82,6 +84,7 @@ export class MissileGame {
     questionText.textContent = q.texte;
     tempsLabel.textContent = getTempsFormule(q.temps);
     tempsLabel.className = `temps-label ${getTempsCouleur(q.temps)}`;
+    if (phraseEl) phraseEl.textContent = q.phrase || '';
 
     choices.innerHTML = '';
     q.choix.forEach((choix) => {

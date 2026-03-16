@@ -1,4 +1,5 @@
 import { VERBES } from './verbes.js';
+import { PHRASES_MOTIVATION } from './phrases.js';
 
 const PRONOMS = ["je","tu","il/elle","nous","vous","ils/elles"];
 
@@ -45,6 +46,7 @@ export function genererQuestion(verbe, temps, difficulte = 'moyen') {
     temps,
     pronomIdx: idx,
     infinitif: verbe.infinitif,
+    phrase: PHRASES_MOTIVATION[Math.floor(Math.random() * PHRASES_MOTIVATION.length)],
   };
 }
 

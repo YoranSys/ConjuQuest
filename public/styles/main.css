@@ -195,6 +195,8 @@ button { cursor: pointer; border: none; font-family: inherit; color: inherit; }
 .choice-btn.wrong   { background: rgba(239,68,68,.15); border-color: var(--danger); color: var(--danger); }
 .choice-btn:disabled { cursor: default; }
 
+.phrase-motivation { margin-top: 20px; text-align: center; font-size: .88rem; font-style: italic; color: var(--text-muted); line-height: 1.5; padding: 10px 8px; border-top: 1px solid var(--bg3); }
+
 /* ── Combo ───────────────────────────────────────────────────────────── */
 .combo-display { text-align: center; height: 40px; font-size: 1.1rem; font-weight: 900; transition: opacity .4s; opacity: 0; }
 .combo-x2      { color: #22d3ee; }
