@@ -80,18 +80,22 @@ export function getTempsLabel(temps) {
 }
 
 /**
- * Returns the correctly formed French instruction for a tense,
- * using "à l'" before vowels and "au" otherwise.
+ * Returns the correctly formed French instruction for a tense.
+ * Known tenses are hard-coded; unknown tenses fall back to a vowel-aware
+ * article: "à l'" before a vowel, "au" otherwise.
  * e.g. "Conjugue à l'imparfait" or "Conjugue au présent"
  */
 export function getTempsFormule(temps) {
   const formules = {
-    present:       "Conjugue au présent",
+    present:       'Conjugue au présent',
     imparfait:     "Conjugue à l'imparfait",
-    passe_compose: "Conjugue au passé composé",
-    futur:         "Conjugue au futur",
+    passe_compose: 'Conjugue au passé composé',
+    futur:         'Conjugue au futur',
   };
-  return formules[temps] || `Conjugue au ${temps}`;
+  if (formules[temps]) return formules[temps];
+  const label = getTempsLabel(temps);
+  const startsWithVowel = /^[aeiouyàâéèêëîïôùûü]/i.test(label);
+  return startsWithVowel ? `Conjugue à l'${label}` : `Conjugue au ${label}`;
 }
 
 /** CSS class name for colour-coding a tense. */

@@ -189,7 +189,7 @@ export function renderAide(container) {
 
       <div class="aide-nav">
         ${SECTIONS.map(s => `
-          <button class="aide-nav-btn ${s.couleur || ''}" data-target="${s.id}">
+          <button class="aide-nav-btn ${s.couleur || ''}" data-target="${s.id}" aria-label="${s.titre}">
             ${s.emoji}
           </button>
         `).join('')}
