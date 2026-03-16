@@ -39,7 +39,7 @@ export function genererQuestion(verbe, temps, difficulte = 'moyen') {
 
   const pronCapitalized = pronom.charAt(0).toUpperCase() + pronom.slice(1);
   const complements = PHRASES[verbe.id];
-  const usePhraseATrous = Math.random() < 0.3 && complements && complements.length > 0;
+  const usePhraseATrous = Math.random() < 0.3 && !!complements && complements.length > 0;
   const complement = usePhraseATrous
     ? complements[Math.floor(Math.random() * complements.length)]
     : null;
