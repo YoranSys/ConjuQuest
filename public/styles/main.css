@@ -482,3 +482,208 @@ button { cursor: pointer; border: none; font-family: inherit; color: inherit; }
   border-color: var(--success);
   color: var(--success);
 }
+
+/* ── Tense colour palette ────────────────────────────────────────────── */
+:root {
+  --temps-present:       #22c55e;
+  --temps-imparfait:     #60a5fa;
+  --temps-passe-compose: #fb923c;
+  --temps-futur:         #22d3ee;
+}
+
+/* Tense-coloured temps-label */
+.temps-label.temps-present       { color: var(--temps-present); }
+.temps-label.temps-imparfait     { color: var(--temps-imparfait); }
+.temps-label.temps-passe-compose { color: var(--temps-passe-compose); }
+.temps-label.temps-futur         { color: var(--temps-futur); }
+
+/* ── Help (aide) button on home screen ───────────────────────────────── */
+.btn-aide {
+  background: var(--bg3);
+  color: #e2e8f0;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-size: .95rem;
+  font-weight: 600;
+  border: 1px solid var(--accent);
+  width: 100%;
+  transition: background .2s;
+  margin-top: 10px;
+}
+.btn-aide:hover { background: var(--bg2); }
+
+/* ── Aide screen ─────────────────────────────────────────────────────── */
+.screen-aide { padding-bottom: 32px; }
+
+.aide-header { text-align: center; padding: 20px 0 10px; }
+.aide-title  { font-size: 1.5rem; font-weight: 900; color: var(--accent); }
+.aide-subtitle { font-size: .85rem; color: var(--text-muted); margin-top: 4px; }
+
+/* Quick-nav pills */
+.aide-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 0 14px;
+  scrollbar-width: none;
+}
+.aide-nav::-webkit-scrollbar { display: none; }
+.aide-nav-btn {
+  background: var(--bg2);
+  border: 2px solid var(--bg3);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: border-color .15s, transform .1s;
+}
+.aide-nav-btn:active { transform: scale(.9); }
+.aide-nav-btn.temps-present       { border-color: var(--temps-present); }
+.aide-nav-btn.temps-imparfait     { border-color: var(--temps-imparfait); }
+.aide-nav-btn.temps-passe-compose { border-color: var(--temps-passe-compose); }
+.aide-nav-btn.temps-futur         { border-color: var(--temps-futur); }
+
+/* Sections */
+.aide-sections { display: flex; flex-direction: column; gap: 10px; }
+
+.aide-section {
+  background: var(--bg2);
+  border: 2px solid var(--bg3);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.aide-section.temps-present       { border-color: color-mix(in srgb, var(--temps-present) 40%, var(--bg3)); }
+.aide-section.temps-imparfait     { border-color: color-mix(in srgb, var(--temps-imparfait) 40%, var(--bg3)); }
+.aide-section.temps-passe-compose { border-color: color-mix(in srgb, var(--temps-passe-compose) 40%, var(--bg3)); }
+.aide-section.temps-futur         { border-color: color-mix(in srgb, var(--temps-futur) 40%, var(--bg3)); }
+
+.aide-section details { width: 100%; }
+.aide-section summary { list-style: none; cursor: pointer; }
+.aide-section summary::-webkit-details-marker { display: none; }
+
+.aide-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 8px;
+}
+.aide-section-title  { font-size: .95rem; font-weight: 700; flex: 1; }
+.aide-section-chevron { font-size: .75rem; color: var(--text-muted); transition: transform .25s; }
+details[open] .aide-section-chevron { transform: rotate(180deg); }
+
+/* Tinted title bar */
+.aide-section.temps-present       .aide-section-header { color: var(--temps-present); }
+.aide-section.temps-imparfait     .aide-section-header { color: var(--temps-imparfait); }
+.aide-section.temps-passe-compose .aide-section-header { color: var(--temps-passe-compose); }
+.aide-section.temps-futur         .aide-section-header { color: var(--temps-futur); }
+
+.aide-section-body { padding: 0 16px 16px; font-size: .88rem; line-height: 1.6; color: var(--text); }
+.aide-section-body p { margin-bottom: 10px; }
+
+/* Verb example pills */
+.aide-exemples { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.aide-ex-card  {
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 80px;
+}
+.aide-ex-verb { font-size: 1rem; font-weight: 800; color: var(--accent); }
+.aide-ex-desc { font-size: .68rem; color: var(--text-muted); }
+
+/* Groups */
+.aide-groupes { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.aide-groupe-card {
+  background: var(--bg3);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+}
+.aide-groupe-1 { border-left: 4px solid var(--temps-present); }
+.aide-groupe-2 { border-left: 4px solid var(--temps-futur); }
+.aide-groupe-3 { border-left: 4px solid var(--temps-passe-compose); }
+.aide-groupe-num  { font-size: .7rem; font-weight: 700; color: var(--text-muted); grid-row: 1; }
+.aide-groupe-term { font-size: 1rem; font-weight: 900; color: var(--accent); grid-row: 2; }
+.aide-groupe-ex   { font-size: .8rem; color: var(--text); grid-column: 2; grid-row: 1; }
+.aide-groupe-nb   { font-size: .7rem; color: var(--text-muted); grid-column: 2; grid-row: 2; font-style: italic; }
+
+/* Conjugation tables */
+.aide-conjugaison {
+  border-radius: var(--radius);
+  padding: 12px;
+  margin: 10px 0;
+}
+.temps-present-bg       { background: rgba(34,197,94,.08);   border: 1px solid rgba(34,197,94,.3); }
+.temps-imparfait-bg     { background: rgba(96,165,250,.08);  border: 1px solid rgba(96,165,250,.3); }
+.temps-passe-compose-bg { background: rgba(251,146,60,.08);  border: 1px solid rgba(251,146,60,.3); }
+.temps-futur-bg         { background: rgba(34,211,238,.08);  border: 1px solid rgba(34,211,238,.3); }
+
+.aide-conj-titre { font-size: .75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+.aide-conj-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; font-size: .82rem; }
+.aide-conj-grid span strong { color: var(--text); }
+
+/* Phrase examples */
+.aide-phrase-ex { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.aide-phrase    { background: var(--bg3); border-radius: 8px; padding: 8px 12px; font-size: .85rem; }
+
+/* Tip block */
+.aide-tip {
+  font-size: .8rem;
+  color: var(--text-muted);
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+
+/* Pronoms grid */
+.aide-pronoms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+.aide-pronom-card {
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.aide-pronom {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--accent);
+}
+.aide-pronom-card span:last-child { font-size: .68rem; color: var(--text-muted); }
+
+/* Conseils */
+.aide-conseils-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.aide-conseils-list li { background: var(--bg3); border-radius: 8px; padding: 10px 12px; font-size: .85rem; }
+
+.aide-fun-fact {
+  background: linear-gradient(135deg, rgba(83,74,183,.25), rgba(167,139,250,.15));
+  border: 1px solid var(--purple);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.aide-fun-emoji { font-size: 1.8rem; flex-shrink: 0; }
+.aide-fun-fact p { font-size: .85rem; margin: 0; }
+
+/* Footer */
+.aide-footer { margin-top: 24px; }
+

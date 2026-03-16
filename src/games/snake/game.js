@@ -1,4 +1,4 @@
-import { genererSerie } from '../../data/questions.js';
+import { genererSerie, getTempsFormule, getTempsCouleur } from '../../data/questions.js';
 import { calcXP, getComboLabel } from '../../engine/xp.js';
 import { addXP, incrementStreak, resetStreak, recordResponse } from '../../state.js';
 import { DB } from '../../db.js';
@@ -8,13 +8,6 @@ import { showFeedback } from '../../ui/components/feedback.js';
 
 const GRID = 16;
 const SPEED_MS = 220;
-
-const TEMPS_LABELS = {
-  present: 'Présent',
-  imparfait: 'Imparfait',
-  passe_compose: 'Passé composé',
-  futur: 'Futur',
-};
 
 export class SnakeGame {
   constructor(options = {}) {
@@ -271,7 +264,8 @@ export class SnakeGame {
     }
 
     questionText.textContent = q.texte;
-    tempsLabel.textContent = `Conjugue au ${TEMPS_LABELS[q.temps] || q.temps}`;
+    tempsLabel.textContent = getTempsFormule(q.temps);
+    tempsLabel.className = `temps-label ${getTempsCouleur(q.temps)}`;
 
     choices.innerHTML = '';
     q.choix.forEach((choix) => {

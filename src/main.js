@@ -1,6 +1,7 @@
 import { initState, getState, subscribe, navigate } from './state.js';
 import { renderHome } from './ui/screens/home.js';
 import { renderProfile } from './ui/screens/profile.js';
+import { renderAide } from './ui/screens/aide.js';
 import { MissileGame } from './games/missile/game.js';
 import { SnakeGame } from './games/snake/game.js';
 import { FrappeEclairGame } from './games/frappe/game.js';
@@ -18,6 +19,9 @@ function renderScreen(screen) {
       break;
     case 'profile':
       renderProfile(app);
+      break;
+    case 'aide':
+      renderAide(app);
       break;
     case 'missile': {
       const game = new MissileGame({

@@ -1,4 +1,4 @@
-import { genererSerie, getTempsLabel } from '../../data/questions.js';
+import { genererSerie, getTempsFormule, getTempsCouleur } from '../../data/questions.js';
 import { calcXP, getComboLabel } from '../../engine/xp.js';
 import { addXP, incrementStreak, resetStreak, recordResponse } from '../../state.js';
 import { DB } from '../../db.js';
@@ -81,7 +81,8 @@ export class FrappeEclairGame {
 
     qCurrent.textContent = this.currentIndex + 1;
     questionText.textContent = q.texte;
-    tempsLabel.textContent = `Conjugue au ${getTempsLabel(q.temps)}`;
+    tempsLabel.textContent = getTempsFormule(q.temps);
+    tempsLabel.className = `temps-label ${getTempsCouleur(q.temps)}`;
 
     input.value = '';
     input.disabled = false;

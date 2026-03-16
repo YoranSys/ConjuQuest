@@ -92,6 +92,7 @@ export function renderHome(container) {
 
       <div class="home-actions">
         <button class="btn-secondary" id="btn-profile">👤 Mon Profil</button>
+        <button class="btn-aide" id="btn-aide">📚 Guide de conjugaison</button>
       </div>
     </div>
   `;
@@ -115,6 +116,7 @@ export function renderHome(container) {
   if (frappeUnlocked) document.getElementById('btn-frappe').addEventListener('click', () => navigate('frappe'));
   if (memoryUnlocked) document.getElementById('btn-memory').addEventListener('click', () => navigate('memory'));
   document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
+  document.getElementById('btn-aide').addEventListener('click', () => navigate('aide'));
 }
 
 function openChest(chest, container) {
