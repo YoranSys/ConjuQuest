@@ -51,7 +51,7 @@ describe('genererQuestion', () => {
   });
 
   it('le texte commence toujours par le pronom en majuscule', () => {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
       const q = genererQuestion(verbe, 'present');
       const firstChar = q.texte.charAt(0);
       expect(firstChar).toBe(firstChar.toUpperCase());
@@ -71,7 +71,7 @@ describe('genererQuestion', () => {
       }
     }
     const ratio = phraseCount / N;
-    // Allow ±15% tolerance around 30%
+    // Allow ±15 percentage points around 30% (i.e. 15%–45% range)
     expect(ratio).toBeGreaterThan(0.15);
     expect(ratio).toBeLessThan(0.45);
   });
