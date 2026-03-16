@@ -1,4 +1,5 @@
 import { VERBES } from './verbes.js';
+import { PHRASES } from './phrases.js';
 
 const PRONOMS = ["je","tu","il/elle","nous","vous","ils/elles"];
 
@@ -36,8 +37,18 @@ export function genererQuestion(verbe, temps, difficulte = 'moyen') {
     distracteurs.push('...');
   }
 
+  const pronCapitalized = pronom.charAt(0).toUpperCase() + pronom.slice(1);
+  const complements = PHRASES[verbe.id];
+  const usePhraseATrous = Math.random() < 0.3 && complements && complements.length > 0;
+  const complement = usePhraseATrous
+    ? complements[Math.floor(Math.random() * complements.length)]
+    : null;
+  const texte = complement
+    ? `${pronCapitalized} ___ ${complement} (${verbe.infinitif})`
+    : `${pronCapitalized} ___ (${verbe.infinitif})`;
+
   return {
-    texte: `${pronom.charAt(0).toUpperCase() + pronom.slice(1)} ___ (${verbe.infinitif})`,
+    texte,
     pronom,
     correcte,
     choix: shuffle([correcte, ...distracteurs]),
