@@ -23,6 +23,9 @@ describe('PHRASES dataset', () => {
 
 describe('genererQuestion', () => {
   const verbe = VERBES.find(v => v.id === 'chanter');
+  if (!verbe) {
+    throw new Error("Verbe 'chanter' introuvable dans VERBES");
+  }
 
   it('retourne un objet question avec les propriétés requises', () => {
     const q = genererQuestion(verbe, 'present');
