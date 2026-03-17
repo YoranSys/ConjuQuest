@@ -203,6 +203,9 @@ export class MissileGame {
 
         playWrong();
         vibrate([100]);
+        // Reset streak immediately on first wrong attempt (even if no life is lost)
+        this.streak = 0;
+        resetStreak();
 
       } else {
         // Second wrong attempt: reveal correct answer, prompt player to click it
