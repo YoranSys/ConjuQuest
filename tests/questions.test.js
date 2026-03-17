@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { genererQuestion, genererSerie } from '../src/data/questions.js';
 import { VERBES } from '../src/data/verbes.js';
 import { PHRASES } from '../src/data/phrases.js';
@@ -57,21 +57,43 @@ describe('genererQuestion', () => {
   });
 
   it('il, elle et on ont la même conjugaison (3ᵉ pers. sing.)', () => {
-    for (let i = 0; i < 50; i++) {
-      const q = genererQuestion(verbe, 'present');
-      if (q.pronom === 'il' || q.pronom === 'elle' || q.pronom === 'on') {
+    const pronomsSingulier = ['il', 'elle', 'on'];
+    const pronomsParIndex = PRONOMS_ATTENDUS;
+    const totalPronoms = pronomsParIndex.length;
+
+    pronomsSingulier.forEach(pronomCible => {
+      const index = pronomsParIndex.indexOf(pronomCible);
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      const mock = vi.spyOn(Math, 'random').mockReturnValue((index + 0.1) / totalPronoms);
+      try {
+        const q = genererQuestion(verbe, 'present');
+        expect(q.pronom).toBe(pronomCible);
         expect(q.correcte).toBe(verbe.temps.present[2]);
+      } finally {
+        mock.mockRestore();
       }
-    }
+    });
   });
 
   it('ils et elles ont la même conjugaison (3ᵉ pers. plur.)', () => {
-    for (let i = 0; i < 50; i++) {
-      const q = genererQuestion(verbe, 'present');
-      if (q.pronom === 'ils' || q.pronom === 'elles') {
+    const pronomsPluriel = ['ils', 'elles'];
+    const pronomsParIndex = PRONOMS_ATTENDUS;
+    const totalPronoms = pronomsParIndex.length;
+
+    pronomsPluriel.forEach(pronomCible => {
+      const index = pronomsParIndex.indexOf(pronomCible);
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      const mock = vi.spyOn(Math, 'random').mockReturnValue((index + 0.1) / totalPronoms);
+      try {
+        const q = genererQuestion(verbe, 'present');
+        expect(q.pronom).toBe(pronomCible);
         expect(q.correcte).toBe(verbe.temps.present[5]);
+      } finally {
+        mock.mockRestore();
       }
-    }
+    });
   });
 
   it('le texte contient toujours le symbole ___', () => {
