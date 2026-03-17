@@ -6,12 +6,77 @@ import { vibrate } from '../../utils/haptics.js';
 import { showFeedback } from '../../ui/components/feedback.js';
 
 const MAZE_LENGTH = 8;
+const MAZE_ROWS = 5;
+const MAZE_COLS = 5;
 const REWARDS = ['⭐', '🍬', '🎁', '🌈', '🎀', '🍭', '🏅', '🏆'];
 const THEMES = [
   { label: '🌲 Forêt enchantée', bg: '#0d1f0d' },
   { label: '🏰 Château magique', bg: '#110d1f' },
   { label: '🏖️ Plage des trésors', bg: '#0d1a1f' },
 ];
+
+// Solution path: 9 positions = 8 steps = 8 questions.
+// Enters from the LEFT at row 2, exits to the RIGHT at row 2.
+const MAZE_PATH = [
+  [2, 0], [1, 0], [0, 0], [0, 1], [0, 2],
+  [1, 2], [2, 2], [2, 3], [2, 4],
+];
+const ENTRY_EXIT_ROW = 2;
+
+/**
+ * Build a 5×5 maze wall structure.
+ * hW[r][c] = true  →  wall between row r and row r+1 at column c
+ * vW[r][c] = true  →  wall between col c and col c+1 at row r
+ *
+ * All 40 interior walls start PRESENT. Only the 8 solution-path passages
+ * plus 16 carefully chosen dead-end corridors are opened, leaving 40 % of
+ * walls visible — enough for a proper maze look without any isolated cells.
+ *
+ * Solution path (9 cells, 8 steps):
+ *   Enter LEFT at row 2 → up left col → right along top → down to row 2 → exit RIGHT
+ *   [2,0]→[1,0]→[0,0]→[0,1]→[0,2]→[1,2]→[2,2]→[2,3]→[2,4]
+ */
+function buildMaze() {
+  const hW = Array.from({ length: MAZE_ROWS - 1 }, () => new Array(MAZE_COLS).fill(true));
+  const vW = Array.from({ length: MAZE_ROWS }, () => new Array(MAZE_COLS - 1).fill(true));
+
+  const oH = (r, c) => { if (r >= 0 && r < MAZE_ROWS - 1 && c >= 0 && c < MAZE_COLS) hW[r][c] = false; };
+  const oV = (r, c) => { if (r >= 0 && r < MAZE_ROWS && c >= 0 && c < MAZE_COLS - 1) vW[r][c] = false; };
+
+  // ── Solution path passages (8) ──────────────────────────────────────────
+  oH(0, 0); oH(1, 0);           // left col: (2,0)↔(1,0)↔(0,0)
+  oV(0, 0); oV(0, 1);           // top row:  (0,0)↔(0,1)↔(0,2)
+  oH(0, 2); oH(1, 2);           // descent:  (0,2)↔(1,2)↔(2,2)
+  oV(2, 2); oV(2, 3);           // exit:     (2,2)↔(2,3)↔(2,4)
+
+  // ── Dead-end corridors (16) — every cell reachable, no shortcuts ────────
+  // Top-right cluster — false path branching off path cell (2,3)
+  oV(0, 3);                      // (0,3)↔(0,4)
+  oH(0, 3);                      // (0,3)↔(1,3)
+  oV(1, 3);                      // (1,3)↔(1,4)
+  oH(1, 3);                      // (1,3)↔(2,3) [dead-end bait]
+
+  // Centre-left — stub off path cell (1,0)
+  oV(1, 0);                      // (1,0)↔(1,1)
+
+  // Lower-left cluster — branches off path cell (2,0)
+  oH(2, 0);                      // (2,0)↔(3,0)
+  oV(3, 0);                      // (3,0)↔(3,1)
+  oH(2, 1);                      // (2,1)↔(3,1) [also connects isolated (2,1)]
+  oH(3, 1);                      // (3,1)↔(4,1)
+  oV(4, 0); oV(4, 1);            // (4,0)↔(4,1)↔(4,2)
+
+  // Lower-right cluster — branches off path cell (2,2)
+  oH(2, 2);                      // (2,2)↔(3,2)
+  oV(3, 2);                      // (3,2)↔(3,3)
+  oH(3, 3);                      // (3,3)↔(4,3)
+  oV(4, 3);                      // (4,3)↔(4,4)
+
+  // Exit dead-end — one step below the exit cell
+  oH(2, 4);                      // (2,4)↔(3,4)
+
+  return { hW, vW };
+}
 
 export class LilaGame {
   constructor(options = {}) {
@@ -27,6 +92,7 @@ export class LilaGame {
     this.container = null;
     this.questionStartTime = null;
     this.theme = THEMES[Math.floor(Math.random() * THEMES.length)];
+    this.mazeData = buildMaze();
   }
 
   start(container) {
@@ -50,7 +116,7 @@ export class LilaGame {
         </div>
 
         <div class="lila-maze-wrapper">
-          <div class="lila-maze" id="lila-path"></div>
+          <canvas id="maze-canvas" class="lila-maze-canvas"></canvas>
         </div>
 
         <div class="lila-question-area" id="question-area">
@@ -64,64 +130,111 @@ export class LilaGame {
         <div class="feedback-overlay" id="feedback-overlay"></div>
       </div>
     `;
-    this._renderPath();
+    this._drawMaze();
   }
 
-  _renderPath() {
-    const maze = document.getElementById('lila-path');
-    if (!maze) return;
-    maze.innerHTML = '';
+  _drawMaze() {
+    const canvas = this.container && this.container.querySelector('#maze-canvas');
+    if (!canvas) return;
+    const { hW, vW } = this.mazeData;
 
-    const n = this.questions.length;
-    const half = Math.ceil(n / 2);
+    // Fit to wrapper width (cap at 320 so it never exceeds the card)
+    const wrapper = canvas.parentElement;
+    if (!wrapper) return;
+    const availW = Math.min(wrapper.clientWidth - 8, 320);
+    const CELL = Math.max(48, Math.floor(availW / MAZE_COLS));
+    const WALL = 3;
+    const canvasW = MAZE_COLS * CELL;
+    const canvasH = MAZE_ROWS * CELL;
 
-    const makeCell = (i) => {
-      const isDone = i < this.currentIndex;
-      const isCurrent = i === this.currentIndex;
-      const isLast = i === n - 1;
-      const cell = document.createElement('div');
-      cell.className = `lila-cell${isDone ? ' lila-cell-done' : isCurrent ? ' lila-cell-current' : ''}`;
-      if (isDone) {
-        cell.textContent = REWARDS[i % REWARDS.length];
-      } else if (isLast) {
-        cell.textContent = '💎';
-      } else {
-        cell.textContent = isCurrent ? '🧝' : '📦';
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    canvas.width = canvasW * dpr;
+    canvas.height = canvasH * dpr;
+    canvas.style.width = canvasW + 'px';
+    canvas.style.height = canvasH + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    // ── Background ──────────────────────────────────────────────────────────
+    ctx.fillStyle = this.theme.bg;
+    ctx.fillRect(0, 0, canvasW, canvasH);
+
+    // ── Cell highlights for the solution path ──────────────────────────────
+    for (let i = 0; i < MAZE_PATH.length; i++) {
+      const [r, c] = MAZE_PATH[i];
+      if (i < this.currentIndex) {
+        ctx.fillStyle = 'rgba(34,197,94,0.22)';
+        ctx.fillRect(c * CELL + 1, r * CELL + 1, CELL - 2, CELL - 2);
+      } else if (i === this.currentIndex) {
+        ctx.fillStyle = 'rgba(251,191,36,0.28)';
+        ctx.fillRect(c * CELL + 1, r * CELL + 1, CELL - 2, CELL - 2);
       }
-      return cell;
-    };
-
-    const makeArrow = (dir) => {
-      const a = document.createElement('span');
-      a.className = 'lila-maze-arrow';
-      a.textContent = dir;
-      return a;
-    };
-
-    // Row 1: cells 0 → half-1 (left to right)
-    const row1 = document.createElement('div');
-    row1.className = 'lila-maze-row';
-    for (let i = 0; i < half; i++) {
-      row1.appendChild(makeCell(i));
-      if (i < half - 1) row1.appendChild(makeArrow('→'));
     }
 
-    // Bend: down-arrow aligned to the right
-    const bend = document.createElement('div');
-    bend.className = 'lila-maze-bend';
-    bend.textContent = '↓';
+    // ── Walls ──────────────────────────────────────────────────────────────
+    const wallColor = '#c4880d';
+    ctx.strokeStyle = wallColor;
+    ctx.lineWidth = WALL;
+    ctx.lineCap = 'square';
 
-    // Row 2: cells n-1 → half (right to left)
-    const row2 = document.createElement('div');
-    row2.className = 'lila-maze-row';
-    for (let i = n - 1; i >= half; i--) {
-      row2.appendChild(makeCell(i));
-      if (i > half) row2.appendChild(makeArrow('←'));
+    // Outer border with openings at ENTRY_EXIT_ROW on left and right
+    const er = ENTRY_EXIT_ROW;
+    // Top
+    ctx.beginPath(); ctx.moveTo(0, WALL / 2); ctx.lineTo(canvasW, WALL / 2); ctx.stroke();
+    // Bottom
+    ctx.beginPath(); ctx.moveTo(0, canvasH - WALL / 2); ctx.lineTo(canvasW, canvasH - WALL / 2); ctx.stroke();
+    // Left (gap for entry)
+    ctx.beginPath(); ctx.moveTo(WALL / 2, 0); ctx.lineTo(WALL / 2, er * CELL); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(WALL / 2, (er + 1) * CELL); ctx.lineTo(WALL / 2, canvasH); ctx.stroke();
+    // Right (gap for exit)
+    ctx.beginPath(); ctx.moveTo(canvasW - WALL / 2, 0); ctx.lineTo(canvasW - WALL / 2, er * CELL); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(canvasW - WALL / 2, (er + 1) * CELL); ctx.lineTo(canvasW - WALL / 2, canvasH); ctx.stroke();
+
+    // Interior horizontal walls (between row r and row r+1)
+    for (let r = 0; r < MAZE_ROWS - 1; r++) {
+      for (let c = 0; c < MAZE_COLS; c++) {
+        if (hW[r][c]) {
+          ctx.beginPath();
+          ctx.moveTo(c * CELL, (r + 1) * CELL);
+          ctx.lineTo((c + 1) * CELL, (r + 1) * CELL);
+          ctx.stroke();
+        }
+      }
     }
 
-    maze.appendChild(row1);
-    maze.appendChild(bend);
-    maze.appendChild(row2);
+    // Interior vertical walls (between col c and col c+1)
+    for (let r = 0; r < MAZE_ROWS; r++) {
+      for (let c = 0; c < MAZE_COLS - 1; c++) {
+        if (vW[r][c]) {
+          ctx.beginPath();
+          ctx.moveTo((c + 1) * CELL, r * CELL);
+          ctx.lineTo((c + 1) * CELL, (r + 1) * CELL);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // ── Emoji on path cells ────────────────────────────────────────────────
+    const fontSize = Math.floor(CELL * 0.52);
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let i = 0; i < MAZE_PATH.length; i++) {
+      const [r, c] = MAZE_PATH[i];
+      const cx = c * CELL + CELL / 2;
+      const cy = r * CELL + CELL / 2;
+      let emoji = '';
+      if (i < this.currentIndex) {
+        emoji = REWARDS[i % REWARDS.length];
+      } else if (i === this.currentIndex) {
+        emoji = '🧝';
+      } else if (i === MAZE_PATH.length - 1) {
+        emoji = '💎';
+      }
+      if (emoji) ctx.fillText(emoji, cx, cy);
+    }
   }
 
   afficherQuestion() {
@@ -133,7 +246,7 @@ export class LilaGame {
     const q = this.questions[this.currentIndex];
     this.questionStartTime = Date.now();
 
-    this._renderPath();
+    this._drawMaze();
 
     const questionText = document.getElementById('question-text');
     const opBadge = document.getElementById('lila-op-badge');
