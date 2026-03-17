@@ -106,7 +106,10 @@ export class MissileGame {
     if (parts[1]) questionText.appendChild(document.createTextNode(parts[1]));
     tempsLabel.textContent = getTempsFormule(q.temps);
     tempsLabel.className = `temps-label ${getTempsCouleur(q.temps)}`;
-    if (encouragement) encouragement.textContent = '';
+    if (encouragement) {
+      encouragement.textContent = '';
+      encouragement.className = 'encouragement';
+    }
 
     choices.innerHTML = '';
     q.choix.forEach((choix) => {
