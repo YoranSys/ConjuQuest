@@ -50,10 +50,11 @@ export class LilaGame {
         </div>
 
         <div class="lila-maze-wrapper">
-          <div class="lila-path" id="lila-path"></div>
+          <div class="lila-maze" id="lila-path"></div>
         </div>
 
-        <div class="question-area" id="question-area">
+        <div class="lila-question-area" id="question-area">
+          <div class="lila-progress-text" id="lila-progress">Question 1 / ${this.questions.length}</div>
           <div class="lila-op-badge" id="lila-op-badge"></div>
           <div class="question-text" id="question-text"></div>
           <div class="choices" id="choices"></div>
@@ -67,14 +68,18 @@ export class LilaGame {
   }
 
   _renderPath() {
-    const path = document.getElementById('lila-path');
-    if (!path) return;
-    path.innerHTML = '';
-    for (let i = 0; i < this.questions.length; i++) {
-      const cell = document.createElement('div');
+    const maze = document.getElementById('lila-path');
+    if (!maze) return;
+    maze.innerHTML = '';
+
+    const n = this.questions.length;
+    const half = Math.ceil(n / 2);
+
+    const makeCell = (i) => {
       const isDone = i < this.currentIndex;
       const isCurrent = i === this.currentIndex;
-      const isLast = i === this.questions.length - 1;
+      const isLast = i === n - 1;
+      const cell = document.createElement('div');
       cell.className = `lila-cell${isDone ? ' lila-cell-done' : isCurrent ? ' lila-cell-current' : ''}`;
       if (isDone) {
         cell.textContent = REWARDS[i % REWARDS.length];
@@ -83,8 +88,40 @@ export class LilaGame {
       } else {
         cell.textContent = isCurrent ? '🧝' : '📦';
       }
-      path.appendChild(cell);
+      return cell;
+    };
+
+    const makeArrow = (dir) => {
+      const a = document.createElement('span');
+      a.className = 'lila-maze-arrow';
+      a.textContent = dir;
+      return a;
+    };
+
+    // Row 1: cells 0 → half-1 (left to right)
+    const row1 = document.createElement('div');
+    row1.className = 'lila-maze-row';
+    for (let i = 0; i < half; i++) {
+      row1.appendChild(makeCell(i));
+      if (i < half - 1) row1.appendChild(makeArrow('→'));
     }
+
+    // Bend: down-arrow aligned to the right
+    const bend = document.createElement('div');
+    bend.className = 'lila-maze-bend';
+    bend.textContent = '↓';
+
+    // Row 2: cells n-1 → half (right to left)
+    const row2 = document.createElement('div');
+    row2.className = 'lila-maze-row';
+    for (let i = n - 1; i >= half; i--) {
+      row2.appendChild(makeCell(i));
+      if (i > half) row2.appendChild(makeArrow('←'));
+    }
+
+    maze.appendChild(row1);
+    maze.appendChild(bend);
+    maze.appendChild(row2);
   }
 
   afficherQuestion() {
@@ -106,6 +143,9 @@ export class LilaGame {
 
     opBadge.textContent = `${getOperationEmoji(q.operation)} ${getOperationLabel(q.operation)}`;
     questionText.textContent = q.texte;
+
+    const progressEl = document.getElementById('lila-progress');
+    if (progressEl) progressEl.textContent = `Question ${this.currentIndex + 1} / ${this.questions.length}`;
 
     choices.innerHTML = '';
     q.choix.forEach((choix) => {
