@@ -6,6 +6,7 @@ import { MissileGame } from './games/missile/game.js';
 import { SnakeGame } from './games/snake/game.js';
 import { FrappeEclairGame } from './games/frappe/game.js';
 import { MemoryGame } from './games/memory/game.js';
+import { LilaGame } from './games/lila/game.js';
 import { renderGameResult } from './ui/screens/game-result.js';
 
 const app = document.getElementById('app');
@@ -58,6 +59,19 @@ function renderScreen(screen) {
     }
     case 'memory': {
       const game = new MemoryGame({
+        onComplete: (result) => {
+          game.destroy();
+          renderGameResult(app, result);
+        },
+      });
+      game.start(app);
+      break;
+    }
+    case 'lila': {
+      const lilaNiveau = (getState().profile?.niveau || 0) >= 3 ? 2 : 1;
+      const game = new LilaGame({
+        n: 8,
+        niveau: lilaNiveau,
         onComplete: (result) => {
           game.destroy();
           renderGameResult(app, result);

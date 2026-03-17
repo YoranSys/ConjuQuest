@@ -71,7 +71,7 @@ export function renderHome(container) {
       </div>
 
       <div class="home-games">
-        <h2 class="section-title">🎮 Mini-jeux</h2>
+        <h2 class="section-title">🎮 Mini-jeux de conjugaison</h2>
         <div class="games-grid">
           <button class="game-card" id="btn-missile">
             <div class="game-icon">🚀</div>
@@ -88,6 +88,16 @@ export function renderHome(container) {
           ${frappeCard}
           ${memoryCard}
         </div>
+      </div>
+
+      <div class="home-games home-lila-section">
+        <h2 class="section-title">🧮 Mathémagique</h2>
+        <button class="game-card lila-card" id="btn-lila">
+          <div class="game-icon">🧝</div>
+          <div class="game-name">L'Aventure de Lila</div>
+          <div class="game-desc">Résous des énigmes maths dans le labyrinthe !</div>
+          <div class="game-unlock">CE1 / CE2 — Disponible</div>
+        </button>
       </div>
 
       <div class="home-actions">
@@ -115,6 +125,7 @@ export function renderHome(container) {
   document.getElementById('btn-snake').addEventListener('click', () => navigate('snake'));
   if (frappeUnlocked) document.getElementById('btn-frappe').addEventListener('click', () => navigate('frappe'));
   if (memoryUnlocked) document.getElementById('btn-memory').addEventListener('click', () => navigate('memory'));
+  document.getElementById('btn-lila').addEventListener('click', () => navigate('lila'));
   document.getElementById('btn-profile').addEventListener('click', () => navigate('profile'));
   document.getElementById('btn-aide').addEventListener('click', () => navigate('aide'));
 }

@@ -687,3 +687,75 @@ details[open] .aide-section-chevron { transform: rotate(180deg); }
 /* Footer */
 .aide-footer { margin-top: 24px; }
 
+
+/* ── Lila Math Maze Game ─────────────────────────────────────────────── */
+.home-lila-section { margin-top: 4px; }
+
+.lila-card {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(251,191,36,.1));
+  border-color: #22c55e;
+}
+.lila-card .game-icon { color: var(--success); }
+.lila-card .game-unlock { color: var(--success); }
+
+.lila-game { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+
+.lila-theme-label { font-size: .82rem; color: var(--text-muted); font-weight: 600; }
+.lila-stars-display { font-size: .9rem; font-weight: 700; color: var(--warning); }
+
+/* Maze path */
+.lila-maze-wrapper { padding: 12px 16px 4px; }
+.lila-path {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 4px;
+  scrollbar-width: none;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lila-path::-webkit-scrollbar { display: none; }
+
+.lila-cell {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--bg2);
+  border: 2px solid var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: transform .2s;
+}
+
+.lila-cell-done {
+  background: rgba(34,197,94,.15);
+  border-color: var(--success);
+}
+
+.lila-cell-current {
+  background: rgba(251,191,36,.15);
+  border-color: var(--warning);
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(251,191,36,.4);
+}
+
+/* Operation badge */
+.lila-op-badge {
+  text-align: center;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--warning);
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  background: rgba(251,191,36,.1);
+  border-radius: 20px;
+  display: inline-block;
+  align-self: center;
+}
+
+/* Override question-area to center the op badge */
+#question-area { display: flex; flex-direction: column; align-items: stretch; }
