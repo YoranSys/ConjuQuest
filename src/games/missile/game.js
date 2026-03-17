@@ -136,7 +136,14 @@ export class MissileGame {
       const allBtns = this.container.querySelectorAll('.choice-btn');
       allBtns.forEach(b => {
         b.disabled = true;
-        if (b.dataset.value === q.correcte) b.classList.add('correct');
+        if (b.dataset.value === q.correcte) {
+          // Remove hint state so it doesn't override the correct styling/animation
+          b.classList.remove('hint');
+          // Stop any hint-related CSS animation
+          b.style.animation = 'none';
+          // Apply the correct state
+          b.classList.add('correct');
+        }
       });
 
       // Animate the correct verb into the ___ slot
