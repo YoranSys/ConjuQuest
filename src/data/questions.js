@@ -1,7 +1,9 @@
 import { VERBES } from './verbes.js';
 import { PHRASES } from './phrases.js';
 
-const PRONOMS = ["je","tu","il/elle","nous","vous","ils/elles"];
+const PRONOMS = ["je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles"];
+// Maps each pronoun index to the corresponding verb conjugation form index (0–5)
+const PRONOMS_FORM_IDX = [0, 1, 2, 2, 2, 3, 4, 5, 5];
 
 function shuffle(arr) {
   const a = [...arr];
@@ -13,20 +15,21 @@ function shuffle(arr) {
 }
 
 export function genererQuestion(verbe, temps, difficulte = 'moyen') {
-  const idx = Math.floor(Math.random() * 6);
+  const idx = Math.floor(Math.random() * PRONOMS.length);
   const pronom = PRONOMS[idx];
-  const correcte = verbe.temps[temps][idx];
+  const formIdx = PRONOMS_FORM_IDX[idx];
+  const correcte = verbe.temps[temps][formIdx];
 
   // Distracteurs: formes du même verbe à d'autres temps
   const autresTemps = Object.keys(verbe.temps).filter(t => t !== temps);
   let distracteurs = autresTemps
-    .map(t => verbe.temps[t][idx])
+    .map(t => verbe.temps[t][formIdx])
     .filter(f => f !== correcte);
 
   // Si pas assez de distracteurs, prendre d'autres personnes du même temps
   if (distracteurs.length < 3) {
     const autresForms = verbe.temps[temps]
-      .filter((f, i) => i !== idx && f !== correcte);
+      .filter((f, i) => i !== formIdx && f !== correcte);
     distracteurs = [...distracteurs, ...autresForms];
   }
 

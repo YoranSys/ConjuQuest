@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { genererQuestion, genererSerie } from '../src/data/questions.js';
 import { VERBES } from '../src/data/verbes.js';
 import { PHRASES } from '../src/data/phrases.js';
@@ -27,6 +27,8 @@ describe('genererQuestion', () => {
     throw new Error("Verbe 'chanter' introuvable dans VERBES");
   }
 
+  const PRONOMS_ATTENDUS = ["je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles"];
+
   it('retourne un objet question avec les propriétés requises', () => {
     const q = genererQuestion(verbe, 'present');
     expect(q.texte).toBeTruthy();
@@ -37,6 +39,61 @@ describe('genererQuestion', () => {
     expect(q.verbeId).toBe('chanter');
     expect(q.temps).toBe('present');
     expect(q.infinitif).toBe('chanter');
+  });
+
+  it('utilise uniquement des pronoms séparés (il, elle, on, ils, elles — pas il/elle ni ils/elles)', () => {
+    const seen = new Set();
+    for (let i = 0; i < 500; i++) {
+      const q = genererQuestion(verbe, 'present');
+      expect(PRONOMS_ATTENDUS).toContain(q.pronom);
+      expect(q.pronom).not.toBe('il/elle');
+      expect(q.pronom).not.toBe('ils/elles');
+      seen.add(q.pronom);
+    }
+    // All 9 pronouns should appear over 500 iterations
+    PRONOMS_ATTENDUS.forEach(p => {
+      expect(seen.has(p), `Pronom '${p}' jamais apparu`).toBe(true);
+    });
+  });
+
+  it('il, elle et on ont la même conjugaison (3ᵉ pers. sing.)', () => {
+    const pronomsSingulier = ['il', 'elle', 'on'];
+    const pronomsParIndex = PRONOMS_ATTENDUS;
+    const totalPronoms = pronomsParIndex.length;
+
+    pronomsSingulier.forEach(pronomCible => {
+      const index = pronomsParIndex.indexOf(pronomCible);
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      const mock = vi.spyOn(Math, 'random').mockReturnValue((index + 0.1) / totalPronoms);
+      try {
+        const q = genererQuestion(verbe, 'present');
+        expect(q.pronom).toBe(pronomCible);
+        expect(q.correcte).toBe(verbe.temps.present[2]);
+      } finally {
+        mock.mockRestore();
+      }
+    });
+  });
+
+  it('ils et elles ont la même conjugaison (3ᵉ pers. plur.)', () => {
+    const pronomsPluriel = ['ils', 'elles'];
+    const pronomsParIndex = PRONOMS_ATTENDUS;
+    const totalPronoms = pronomsParIndex.length;
+
+    pronomsPluriel.forEach(pronomCible => {
+      const index = pronomsParIndex.indexOf(pronomCible);
+      expect(index).toBeGreaterThanOrEqual(0);
+
+      const mock = vi.spyOn(Math, 'random').mockReturnValue((index + 0.1) / totalPronoms);
+      try {
+        const q = genererQuestion(verbe, 'present');
+        expect(q.pronom).toBe(pronomCible);
+        expect(q.correcte).toBe(verbe.temps.present[5]);
+      } finally {
+        mock.mockRestore();
+      }
+    });
   });
 
   it('le texte contient toujours le symbole ___', () => {

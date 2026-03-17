@@ -68,10 +68,11 @@ const SECTIONS = [
         <div class="aide-conj-grid">
           <span>je <strong>chante</strong></span><span>nous <strong>chantons</strong></span>
           <span>tu <strong>chantes</strong></span><span>vous <strong>chantez</strong></span>
-          <span>il/elle <strong>chante</strong></span><span>ils/elles <strong>chantent</strong></span>
+          <span>il/elle/on <strong>chante</strong></span><span>ils/elles <strong>chantent</strong></span>
         </div>
       </div>
       <p class="aide-tip">💡 Terminaisons gr.1 : <strong>-e · -es · -e · -ons · -ez · -ent</strong></p>
+      <p class="aide-tip">✨ <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> partagent la même forme. Pareil pour <strong>ils</strong> et <strong>elles</strong> !</p>
     `,
   },
   {
@@ -90,10 +91,11 @@ const SECTIONS = [
         <div class="aide-conj-grid">
           <span>je <strong>chantais</strong></span><span>nous <strong>chantions</strong></span>
           <span>tu <strong>chantais</strong></span><span>vous <strong>chantiez</strong></span>
-          <span>il/elle <strong>chantait</strong></span><span>ils/elles <strong>chantaient</strong></span>
+          <span>il/elle/on <strong>chantait</strong></span><span>ils/elles <strong>chantaient</strong></span>
         </div>
       </div>
       <p class="aide-tip">💡 Terminaisons imparfait : <strong>-ais · -ais · -ait · -ions · -iez · -aient</strong> — toujours les mêmes !</p>
+      <p class="aide-tip">✨ <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> partagent la même forme. Pareil pour <strong>ils</strong> et <strong>elles</strong> !</p>
     `,
   },
   {
@@ -112,10 +114,11 @@ const SECTIONS = [
         <div class="aide-conj-grid">
           <span>j'<strong>ai chanté</strong></span><span>nous <strong>avons chanté</strong></span>
           <span>tu <strong>as chanté</strong></span><span>vous <strong>avez chanté</strong></span>
-          <span>il/elle <strong>a chanté</strong></span><span>ils/elles <strong>ont chanté</strong></span>
+          <span>il/elle/on <strong>a chanté</strong></span><span>ils/elles <strong>ont chanté</strong></span>
         </div>
       </div>
       <p class="aide-tip">💡 Formule : <strong>auxiliaire (avoir/être) + participe passé</strong>. Avec <em>être</em> : « je suis allé(e) ».</p>
+      <p class="aide-tip">✨ <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> partagent la même forme. Pareil pour <strong>ils</strong> et <strong>elles</strong> !</p>
     `,
   },
   {
@@ -134,10 +137,11 @@ const SECTIONS = [
         <div class="aide-conj-grid">
           <span>je <strong>chanterai</strong></span><span>nous <strong>chanterons</strong></span>
           <span>tu <strong>chanteras</strong></span><span>vous <strong>chanterez</strong></span>
-          <span>il/elle <strong>chantera</strong></span><span>ils/elles <strong>chanteront</strong></span>
+          <span>il/elle/on <strong>chantera</strong></span><span>ils/elles <strong>chanteront</strong></span>
         </div>
       </div>
       <p class="aide-tip">💡 Terminaisons futur : <strong>-rai · -ras · -ra · -rons · -rez · -ront</strong> — pensez au verbe « avoir » !</p>
+      <p class="aide-tip">✨ <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> partagent la même forme. Pareil pour <strong>ils</strong> et <strong>elles</strong> !</p>
     `,
   },
   {
@@ -145,16 +149,20 @@ const SECTIONS = [
     titre: '👤 Les Pronoms Sujets',
     emoji: '👤',
     contenu: `
-      <p>Le pronom sujet indique <strong>qui fait l'action</strong>. On en distingue 6 en français.</p>
+      <p>Le pronom sujet indique <strong>qui fait l'action</strong>. On distingue 9 pronoms sujets en français.</p>
       <div class="aide-pronoms-grid">
         <div class="aide-pronom-card"><span class="aide-pronom">je</span><span>1ʳᵉ pers. singulier</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">tu</span><span>2ᵉ pers. singulier</span></div>
-        <div class="aide-pronom-card"><span class="aide-pronom">il / elle</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">il</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">elle</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">on</span><span>3ᵉ pers. singulier</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">nous</span><span>1ʳᵉ pers. pluriel</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">vous</span><span>2ᵉ pers. pluriel</span></div>
-        <div class="aide-pronom-card"><span class="aide-pronom">ils / elles</span><span>3ᵉ pers. pluriel</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">ils</span><span>3ᵉ pers. pluriel</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">elles</span><span>3ᵉ pers. pluriel</span></div>
       </div>
-      <p class="aide-tip">✨ <em>Surprise :</em> « vous » peut désigner une seule personne — c'est le <strong>vouvoiement</strong> de politesse !</p>
+      <p class="aide-tip">✨ <em>À retenir :</em> <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> se conjuguent de la même façon. <strong>ils</strong> et <strong>elles</strong> aussi !</p>
+      <p class="aide-tip">🎓 <em>Surprise :</em> « vous » peut désigner une seule personne — c'est le <strong>vouvoiement</strong> de politesse !</p>
     `,
   },
   {

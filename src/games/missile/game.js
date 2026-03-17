@@ -6,6 +6,14 @@ import { playCorrect, playWrong, playCombo } from '../../utils/audio.js';
 import { vibrate } from '../../utils/haptics.js';
 import { showFeedback } from '../../ui/components/feedback.js';
 
+const ENCOURAGEMENTS = [
+  "Presque ! Essaie encore 💪",
+  "Courage, tu y es presque ! 🌟",
+  "Oups ! Pas tout à fait... Réessaye 😊",
+  "Presque là ! Un autre essai 🎯",
+  "Continue, tu peux le faire ! ✨",
+];
+
 export class MissileGame {
   constructor(options = {}) {
     this.questions = genererSerie(options.n || 10, options.temps || null);
@@ -17,6 +25,8 @@ export class MissileGame {
     this.onComplete = options.onComplete || (() => {});
     this.container = null;
     this.questionStartTime = null;
+    this.essaiCourant = 0;
+    this.hintActive = false;
   }
 
   start(container) {
@@ -52,6 +62,7 @@ export class MissileGame {
         <div class="question-area" id="question-area">
           <div class="question-text" id="question-text"></div>
           <div class="temps-label" id="temps-label"></div>
+          <div class="encouragement" id="encouragement"></div>
           <div class="choices" id="choices"></div>
         </div>
 
@@ -67,6 +78,9 @@ export class MissileGame {
       return;
     }
 
+    this.essaiCourant = 0;
+    this.hintActive = false;
+
     const q = this.questions[this.currentIndex];
     this.questionStartTime = Date.now();
 
@@ -75,13 +89,27 @@ export class MissileGame {
     const choices = document.getElementById('choices');
     const qCurrent = document.getElementById('q-current');
     const progress = document.getElementById('game-progress');
+    const encouragement = document.getElementById('encouragement');
 
     if (!questionText) return;
 
     qCurrent.textContent = this.currentIndex + 1;
-    questionText.textContent = q.texte;
+    // Render ___ as a slot span for the fill animation using safe DOM construction
+    const parts = q.texte.split('___');
+    questionText.innerHTML = '';
+    if (parts[0]) questionText.appendChild(document.createTextNode(parts[0]));
+    const slot = document.createElement('span');
+    slot.className = 'verb-slot';
+    slot.id = 'verb-slot';
+    slot.textContent = '___';
+    questionText.appendChild(slot);
+    if (parts[1]) questionText.appendChild(document.createTextNode(parts[1]));
     tempsLabel.textContent = getTempsFormule(q.temps);
     tempsLabel.className = `temps-label ${getTempsCouleur(q.temps)}`;
+    if (encouragement) {
+      encouragement.textContent = '';
+      encouragement.className = 'encouragement';
+    }
 
     choices.innerHTML = '';
     q.choix.forEach((choix) => {
@@ -106,57 +134,123 @@ export class MissileGame {
     const tempsMs = Date.now() - this.questionStartTime;
     const correct = choix === q.correcte;
 
-    const allBtns = this.container.querySelectorAll('.choice-btn');
-    allBtns.forEach(b => {
-      b.disabled = true;
-      if (b.dataset.value === q.correcte) b.classList.add('correct');
-      else if (b === btn && !correct) b.classList.add('wrong');
-    });
-
-    DB.updateStat(q.verbeId, q.temps, correct);
-
     if (correct) {
-      this.streak++;
-      incrementStreak();
-      const xp = calcXP(true, this.streak, tempsMs, this.vies);
-      addXP(xp);
-      recordResponse(true);
-      this.score += xp;
+      // Disable all buttons
+      const allBtns = this.container.querySelectorAll('.choice-btn');
+      allBtns.forEach(b => {
+        b.disabled = true;
+        if (b.dataset.value === q.correcte) {
+          // Remove hint state so it doesn't override the correct styling/animation
+          b.classList.remove('hint');
+          // Stop any hint-related CSS animation
+          b.style.animation = 'none';
+          // Apply the correct state
+          b.classList.add('correct');
+        }
+      });
 
-      playCorrect();
-      vibrate([50]);
+      // Animate the correct verb into the ___ slot
+      this.animerVerbe(q.correcte);
 
-      const combo = getComboLabel(this.streak);
-      if (combo) {
-        this.showCombo(combo);
-        playCombo();
+      if (!this.hintActive) {
+        // Normal correct answer: record stat, award XP
+        DB.updateStat(q.verbeId, q.temps, true);
+        this.streak++;
+        incrementStreak();
+        const xp = calcXP(true, this.streak, tempsMs, this.vies);
+        addXP(xp);
+        recordResponse(true);
+        this.score += xp;
+
+        playCorrect();
+        vibrate([50]);
+
+        const combo = getComboLabel(this.streak);
+        if (combo) {
+          this.showCombo(combo);
+          playCombo();
+        }
+
+        showFeedback(this.container.querySelector('#feedback-overlay'), true, `+${xp} XP`);
+        document.getElementById('score').textContent = this.score;
+      } else {
+        // Forced correct after hint: no XP, no streak, just move on
+        playCorrect();
+        vibrate([50]);
       }
 
-      showFeedback(this.container.querySelector('#feedback-overlay'), true, `+${xp} XP`);
+      this.hintActive = false;
+
+      setTimeout(() => {
+        this.currentIndex++;
+        this.afficherQuestion();
+      }, 1400);
+
     } else {
-      this.streak = 0;
-      resetStreak();
-      recordResponse(false);
-      this.vies--;
+      this.essaiCourant++;
 
-      playWrong();
-      vibrate([100, 50, 100]);
+      if (this.essaiCourant === 1) {
+        // First wrong attempt: give a second chance with an encouraging phrase
+        btn.classList.add('wrong');
+        btn.disabled = true;
 
-      this.updateVies();
-      showFeedback(this.container.querySelector('#feedback-overlay'), false, q.correcte);
+        const encouragement = document.getElementById('encouragement');
+        if (encouragement) {
+          const msg = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+          encouragement.textContent = msg;
+          encouragement.className = 'encouragement encouragement-visible';
+        }
 
-      if (this.vies <= 0) {
-        setTimeout(() => this.terminer(), 1500);
-        return;
+        playWrong();
+        vibrate([100]);
+        // Reset streak immediately on first wrong attempt (even if no life is lost)
+        this.streak = 0;
+        resetStreak();
+
+      } else {
+        // Second wrong attempt: reveal correct answer, prompt player to click it
+        this.hintActive = true;
+        const allBtns = this.container.querySelectorAll('.choice-btn');
+        allBtns.forEach(b => {
+          b.disabled = true;
+          b.classList.remove('wrong');
+          if (b.dataset.value === q.correcte) {
+            b.classList.add('hint');
+            b.disabled = false;
+          } else {
+            b.classList.add('wrong');
+          }
+        });
+
+        const encouragement = document.getElementById('encouragement');
+        if (encouragement) {
+          encouragement.textContent = '👆 Clique sur la bonne réponse pour continuer !';
+          encouragement.className = 'encouragement encouragement-hint';
+        }
+
+        DB.updateStat(q.verbeId, q.temps, false);
+        this.streak = 0;
+        resetStreak();
+        recordResponse(false);
+        this.vies--;
+
+        playWrong();
+        vibrate([100, 50, 100]);
+        this.updateVies();
+
+        if (this.vies <= 0) {
+          setTimeout(() => this.terminer(), 1800);
+          return;
+        }
       }
     }
+  }
 
-    document.getElementById('score').textContent = this.score;
-
-    setTimeout(() => {
-      this.currentIndex++;
-      this.afficherQuestion();
-    }, 1200);
+  animerVerbe(verbe) {
+    const slot = document.getElementById('verb-slot');
+    if (!slot) return;
+    slot.textContent = verbe;
+    slot.classList.add('verb-fill');
   }
 
   updateVies() {
@@ -191,3 +285,4 @@ export class MissileGame {
     }
   }
 }
+
