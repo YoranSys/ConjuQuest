@@ -38,7 +38,7 @@ export class LilaGame {
 
   render() {
     this.container.innerHTML = `
-      <div class="lila-game">
+      <div class="lila-game" style="background-color: ${this.theme.bg};">
         <div class="game-header">
           <div class="vies">
             ${[...Array(3)].map((_, i) =>
