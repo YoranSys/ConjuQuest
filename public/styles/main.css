@@ -757,5 +757,5 @@ details[open] .aide-section-chevron { transform: rotate(180deg); }
   align-self: center;
 }
 
-/* Override question-area to center the op badge */
-#question-area { display: flex; flex-direction: column; align-items: stretch; }
+/* Override question-area to center the op badge for Lila only */
+.lila-game #question-area { display: flex; flex-direction: column; align-items: stretch; }
