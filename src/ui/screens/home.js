@@ -96,7 +96,7 @@ export function renderHome(container) {
           <div class="game-icon">🧝</div>
           <div class="game-name">L'Aventure de Lila</div>
           <div class="game-desc">Résous des énigmes maths dans le labyrinthe !</div>
-          <div class="game-unlock">CE1 / CE2 — Disponible</div>
+          <div class="game-unlock">CE1 — Disponible (CE2 se débloque plus tard)</div>
         </button>
       </div>
 
