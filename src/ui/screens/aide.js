@@ -145,16 +145,20 @@ const SECTIONS = [
     titre: '👤 Les Pronoms Sujets',
     emoji: '👤',
     contenu: `
-      <p>Le pronom sujet indique <strong>qui fait l'action</strong>. On en distingue 6 en français.</p>
+      <p>Le pronom sujet indique <strong>qui fait l'action</strong>. On distingue 9 pronoms sujets en français.</p>
       <div class="aide-pronoms-grid">
         <div class="aide-pronom-card"><span class="aide-pronom">je</span><span>1ʳᵉ pers. singulier</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">tu</span><span>2ᵉ pers. singulier</span></div>
-        <div class="aide-pronom-card"><span class="aide-pronom">il / elle</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">il</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">elle</span><span>3ᵉ pers. singulier</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">on</span><span>3ᵉ pers. singulier</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">nous</span><span>1ʳᵉ pers. pluriel</span></div>
         <div class="aide-pronom-card"><span class="aide-pronom">vous</span><span>2ᵉ pers. pluriel</span></div>
-        <div class="aide-pronom-card"><span class="aide-pronom">ils / elles</span><span>3ᵉ pers. pluriel</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">ils</span><span>3ᵉ pers. pluriel</span></div>
+        <div class="aide-pronom-card"><span class="aide-pronom">elles</span><span>3ᵉ pers. pluriel</span></div>
       </div>
-      <p class="aide-tip">✨ <em>Surprise :</em> « vous » peut désigner une seule personne — c'est le <strong>vouvoiement</strong> de politesse !</p>
+      <p class="aide-tip">✨ <em>À retenir :</em> <strong>il</strong>, <strong>elle</strong> et <strong>on</strong> se conjuguent de la même façon. <strong>ils</strong> et <strong>elles</strong> aussi !</p>
+      <p class="aide-tip">🎓 <em>Surprise :</em> « vous » peut désigner une seule personne — c'est le <strong>vouvoiement</strong> de politesse !</p>
     `,
   },
   {

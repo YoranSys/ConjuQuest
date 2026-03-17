@@ -27,6 +27,8 @@ describe('genererQuestion', () => {
     throw new Error("Verbe 'chanter' introuvable dans VERBES");
   }
 
+  const PRONOMS_ATTENDUS = ["je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles"];
+
   it('retourne un objet question avec les propriétés requises', () => {
     const q = genererQuestion(verbe, 'present');
     expect(q.texte).toBeTruthy();
@@ -37,6 +39,39 @@ describe('genererQuestion', () => {
     expect(q.verbeId).toBe('chanter');
     expect(q.temps).toBe('present');
     expect(q.infinitif).toBe('chanter');
+  });
+
+  it('utilise uniquement des pronoms séparés (il, elle, on, ils, elles — pas il/elle ni ils/elles)', () => {
+    const seen = new Set();
+    for (let i = 0; i < 500; i++) {
+      const q = genererQuestion(verbe, 'present');
+      expect(PRONOMS_ATTENDUS).toContain(q.pronom);
+      expect(q.pronom).not.toBe('il/elle');
+      expect(q.pronom).not.toBe('ils/elles');
+      seen.add(q.pronom);
+    }
+    // All 9 pronouns should appear over 500 iterations
+    PRONOMS_ATTENDUS.forEach(p => {
+      expect(seen.has(p), `Pronom '${p}' jamais apparu`).toBe(true);
+    });
+  });
+
+  it('il, elle et on ont la même conjugaison (3ᵉ pers. sing.)', () => {
+    for (let i = 0; i < 50; i++) {
+      const q = genererQuestion(verbe, 'present');
+      if (q.pronom === 'il' || q.pronom === 'elle' || q.pronom === 'on') {
+        expect(q.correcte).toBe(verbe.temps.present[2]);
+      }
+    }
+  });
+
+  it('ils et elles ont la même conjugaison (3ᵉ pers. plur.)', () => {
+    for (let i = 0; i < 50; i++) {
+      const q = genererQuestion(verbe, 'present');
+      if (q.pronom === 'ils' || q.pronom === 'elles') {
+        expect(q.correcte).toBe(verbe.temps.present[5]);
+      }
+    }
   });
 
   it('le texte contient toujours le symbole ___', () => {
