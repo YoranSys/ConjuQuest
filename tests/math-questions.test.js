@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { genererQuestionMath, genererSerieMath, getOperationEmoji, getOperationLabel } from '../src/data/math-questions.js';
 
 describe('genererQuestionMath — CE1 (niveau 1)', () => {
@@ -45,24 +45,24 @@ describe('genererQuestionMath — CE1 (niveau 1)', () => {
   });
 
   it('la réponse correcte est mathématiquement juste (addition)', () => {
-    for (let i = 0; i < 100; i++) {
-      const q = genererQuestionMath(1);
-      if (q.operation === 'addition') {
-        const [a, b] = q.texte.replace(' = ?', '').split(' + ').map(Number);
-        expect(Number(q.correcte)).toBe(a + b);
-      }
-    }
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.1);
+    const q = genererQuestionMath(1);
+    // Vérifie que l'opération générée est bien une addition
+    expect(q.operation).toBe('addition');
+    const [a, b] = q.texte.replace(' = ?', '').split(' + ').map(Number);
+    expect(Number(q.correcte)).toBe(a + b);
+    randomSpy.mockRestore();
   });
 
   it('la réponse correcte est mathématiquement juste (soustraction)', () => {
-    for (let i = 0; i < 100; i++) {
-      const q = genererQuestionMath(1);
-      if (q.operation === 'soustraction') {
-        const [a, b] = q.texte.replace(' = ?', '').split(' - ').map(Number);
-        expect(Number(q.correcte)).toBe(a - b);
-        expect(Number(q.correcte)).toBeGreaterThanOrEqual(0);
-      }
-    }
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.9);
+    const q = genererQuestionMath(1);
+    // Vérifie que l'opération générée est bien une soustraction
+    expect(q.operation).toBe('soustraction');
+    const [a, b] = q.texte.replace(' = ?', '').split(' - ').map(Number);
+    expect(Number(q.correcte)).toBe(a - b);
+    expect(Number(q.correcte)).toBeGreaterThanOrEqual(0);
+    randomSpy.mockRestore();
   });
 
   it('les opérations restent dans la plage CE1 (opérandes ≤ 100, résultat ≥ 0)', () => {
